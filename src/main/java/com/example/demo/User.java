@@ -10,12 +10,14 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+    private long id;
     private String name;
     private String email;
+    private String password;
+    private String category;
 
     public User() {
+
     }
 
     public User(String name, String email) {
@@ -23,8 +25,8 @@ public class User {
         this.email = email;
     }
 
-    // getters och setters här om du inte redan har dem
-    public Long getId() {
+
+    public long getId() {
         return id;
     }
 
@@ -43,4 +45,22 @@ public class User {
     public void setEmail(String email) {
         this.email = email;
     }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword() {
+        this.password=password;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+
 }

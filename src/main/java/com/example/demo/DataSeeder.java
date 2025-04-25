@@ -19,16 +19,16 @@ public class DataSeeder implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
+        addUser(new User("Linus","Linus@gmail.com"));
 
-        if (userRepository.count() == 0) {
-            userRepository.save(new User("Alice", "alice@example.com"));
-            userRepository.save(new User("Bob", "bob@example.com"));
-            userRepository.save(new User("Charlie", "charlie@example.com"));
-            System.out.println("🌱 Exempelanvändare seedade!");
-        } else {
-            System.out.println("🙈 Användare finns redan – skippar seeding.");
-        }
+        //User alice = userRepository.findByEmail("theo@example.com");
+        //System.out.println(alice.getEmail());
+        //userRepository.save(new User("Alice", "alice@example.com"));
 
-        userRepository.findAll().forEach(user -> System.out.println(user.getName()+" "+user.getEmail()));
+        //System.out.println(userRepository.findById(1l));
+        //userRepository.
+
+
+        //userRepository.findAll().forEach(user -> System.out.println(user.getName()+" "+user.getEmail()));
     }
 }
