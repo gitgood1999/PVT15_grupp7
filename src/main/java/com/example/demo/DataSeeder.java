@@ -31,4 +31,37 @@ public class DataSeeder implements CommandLineRunner {
 
         //userRepository.findAll().forEach(user -> System.out.println(user.getName()+" "+user.getEmail()));
     }
+
+    public void addUser(User user) {
+
+        if (userRepository.findByEmail(user.getEmail()) != null){
+            System.out.println("User already exists");
+        } else {
+            userRepository.save(new User(user.getName(), user.getEmail()));
+        }
+    }
+
+    public boolean findUserWithMatchingCategory(User user){
+
+
+        return false;
+    }
+
+    public void removeUser(User user) {
+
+        if (checkIfUserExists(user)){
+            userRepository.delete(user);
+        }
+
+
+    }
+
+    public boolean checkIfUserExists(User user) {
+
+        if (userRepository.findByEmail(user.getEmail()) == null){
+            return false;
+        }
+        return true;
+    }
+
 }
