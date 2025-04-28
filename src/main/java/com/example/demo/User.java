@@ -15,6 +15,7 @@ public class User {
     private String email;
     private String password;
     private String category;
+    private boolean available;
 
     public User() {
 
