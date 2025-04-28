@@ -19,7 +19,9 @@ public class DataSeeder implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        addUser(new User("Linus","Linus@gmail.com"));
+        //userRepository.toggleAvailableById(1);
+        //System.out.println(userRepository.findByAvailableTrue());
+
 
         //User alice = userRepository.findByEmail("theo@example.com");
         //System.out.println(alice.getEmail());
@@ -37,7 +39,7 @@ public class DataSeeder implements CommandLineRunner {
         if (userRepository.findByEmail(user.getEmail()) != null){
             System.out.println("User already exists");
         } else {
-            userRepository.save(new User(user.getName(), user.getEmail()));
+            userRepository.save(user);
         }
     }
 

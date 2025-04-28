@@ -24,6 +24,7 @@ public class User {
     public User(String name, String email) {
         this.name = name;
         this.email = email;
+        this.available = false;
     }
 
 
@@ -64,6 +65,10 @@ public class User {
     public void setCategory(String category) {
         this.category = category;
     }
+
+    public void toggleAvailable() {this.available = !this.available;}
+
+    public String toString(){ return name;}
 
 
 }
