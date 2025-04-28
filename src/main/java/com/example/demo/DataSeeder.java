@@ -49,7 +49,6 @@ public class DataSeeder implements CommandLineRunner {
     }
 
     public boolean addUser(User user) {
-
         if (userRepository.findByEmail(user.getEmail()) != null){
             System.out.println("User already exists");
             return false;

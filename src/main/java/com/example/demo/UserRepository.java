@@ -11,11 +11,7 @@ import java.util.List;
 public interface UserRepository extends JpaRepository<User, Long> {
    User findByEmail(String email);
 
-   User findByCategory(Category category);
-
    User findById(long id);
-
-   List<User> findByAvailableTrue();
 
    @Transactional
    @Modifying
