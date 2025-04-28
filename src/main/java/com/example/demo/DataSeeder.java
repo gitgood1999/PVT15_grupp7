@@ -1,11 +1,11 @@
 package com.example.demo;
 
-import com.example.demo.User;
-import com.example.demo.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 public class DataSeeder implements CommandLineRunner {
@@ -21,27 +21,21 @@ public class DataSeeder implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        System.out.println(userRepository.findByAvailableTrueAndCategory(categoryRepository.findByName("Study")));
 
-       // user.setCategory(category);
-       //user2.setCategory(category);
-       // userRepository.toggleAvailableById(user.getId());
-        //userRepository.toggleAvailableById(user2.getId());
+        // addUser(user); för att lägga till användare
 
-        //seedCategories();
+        //findUserMatchList(User user); // returnerar lista med potentiella matchningar där användaren som skickas med exkluderas
+
+        // removeUser(user); // ta bort specifik användare
+
+       // categoryRepository.deleteAll(); // ta bort alla kategorier
+
+        // seedCategories(); //lägg till alla kategorier som skapas i metoden
+
+       //checkIfUserExists(user) // kolla om användare finns
+
         //userRepository.toggleAvailableById(1);
-        //System.out.println(userRepository.findByAvailableTrue());
 
-
-        //User alice = userRepository.findByEmail("theo@example.com");
-        //System.out.println(alice.getEmail());
-        //userRepository.save(new User("Alice", "alice@example.com"));
-
-        //System.out.println(userRepository.findById(1l));
-        //userRepository.
-
-
-        //userRepository.findAll().forEach(user -> System.out.println(user.getName()+" "+user.getEmail()));
     }
 
     private void seedCategories() {
@@ -54,36 +48,46 @@ public class DataSeeder implements CommandLineRunner {
         }
     }
 
-    public void addUser(User user) {
+    public boolean addUser(User user) {
 
         if (userRepository.findByEmail(user.getEmail()) != null){
             System.out.println("User already exists");
+            return false;
         } else {
             userRepository.save(user);
+            return true;
         }
     }
 
-    public boolean findUserWithMatchingCategory(User user){
+    public List<User> findUserMatchList(User user){
+        if(checkIfUserExists(user)){
+            if(user.getCategory().getName().equals("Whatever")){
+                return userRepository.findAllExcludingUser(user.getId());
+            }else{
+                return userRepository.findByCategoryOrWhateverAndAvailableTrueExcludingUser(user.getId());
+            }
+        }else{
+            return null;
+        }
 
-        //Hallå
-        return false;
     }
 
-    public void removeUser(User user) {
-
+    public boolean removeUser(User user) {
         if (checkIfUserExists(user)){
             userRepository.delete(user);
-        }
-
-
+            return true;
+        }return false;
     }
 
     public boolean checkIfUserExists(User user) {
-
-        if (userRepository.findByEmail(user.getEmail()) == null){
-            return false;
-        }
-        return true;
+        return userRepository.findByEmail(user.getEmail()) != null;
     }
 
+    public void toggleAvailable(User user) {
+        if (checkIfUserExists(user)){
+            userRepository.toggleAvailable(user.getId());
+        }else{
+            System.out.println("User does not exist");
+        }
+    }
 }

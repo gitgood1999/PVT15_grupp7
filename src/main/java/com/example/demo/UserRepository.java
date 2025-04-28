@@ -19,9 +19,21 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
    @Transactional
    @Modifying
-   @Query("UPDATE User u SET u.available = CASE WHEN u.available = true THEN false ELSE true END WHERE u.id = :id")
-   void toggleAvailableById(@Param("id") long id);
+   @Query("SELECT u FROM User u WHERE (u.category.name = :categoryName OR u.category.name = 'Whatever') AND u.available = true AND u.id != :userId")
+   List<User> findByCategoryOrWhateverAndAvailableTrueExcludingUser(@Param("userId") Long userId);
 
+   @Transactional
+   @Modifying
+   @Query("UPDATE User u SET u.available = NOT u.available WHERE u.id = :id")
+   void toggleAvailable(@Param("id") long id);
 
-   List<User> findByAvailableTrueAndCategory(Category category);
+   @Transactional
+   @Modifying
+   @Query("UPDATE User u SET u.category = :category WHERE u.id = :userId")
+   void setUserCategory(@Param("userId") Long userId, @Param("category") Category category);
+
+   // Custom query to exclude a specific user based on their ID
+   @Query("SELECT u FROM User u WHERE (u.id != :userId) AND u.available = true")
+   List<User> findAllExcludingUser(@Param("userId") Long userId);
+
 }
