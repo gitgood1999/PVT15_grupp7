@@ -59,6 +59,8 @@ public class User {
         return category;
     }
 
+    public boolean isAvailable() {return available; }
+
     public void setCategory(String category) {
         this.category = category;
     }
