@@ -43,7 +43,7 @@ public class DataSeeder implements CommandLineRunner {
 
     public boolean findUserWithMatchingCategory(User user){
 
-
+        //Hallå
         return false;
     }
 
