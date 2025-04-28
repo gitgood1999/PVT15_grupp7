@@ -1,9 +1,6 @@
 package com.example.demo;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity
 public class User {
@@ -14,8 +11,11 @@ public class User {
     private String name;
     private String email;
     private String password;
-    private String category;
     private boolean available;
+
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Category category;
 
     public User() {
 
@@ -52,17 +52,17 @@ public class User {
         return password;
     }
 
-    public void setPassword() {
+    public void setPassword(String password) {
         this.password=password;
     }
 
-    public String getCategory() {
+    public Category getCategory() {
         return category;
     }
 
     public boolean isAvailable() {return available; }
 
-    public void setCategory(String category) {
+    public void setCategory(Category category) {
         this.category = category;
     }
 

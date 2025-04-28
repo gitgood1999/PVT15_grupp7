@@ -12,13 +12,23 @@ public class DataSeeder implements CommandLineRunner {
 
     private static final Logger log = LoggerFactory.getLogger(DataSeeder.class);
     private final UserRepository userRepository;
+    private final CategoryRepository categoryRepository;
 
-    public DataSeeder(UserRepository userRepository) {
+    public DataSeeder(UserRepository userRepository,  CategoryRepository categoryRepository) {
         this.userRepository = userRepository;
+        this.categoryRepository = categoryRepository;
     }
 
     @Override
     public void run(String... args) throws Exception {
+        System.out.println(userRepository.findByAvailableTrueAndCategory(categoryRepository.findByName("Study")));
+
+       // user.setCategory(category);
+       //user2.setCategory(category);
+       // userRepository.toggleAvailableById(user.getId());
+        //userRepository.toggleAvailableById(user2.getId());
+
+        //seedCategories();
         //userRepository.toggleAvailableById(1);
         //System.out.println(userRepository.findByAvailableTrue());
 
@@ -32,6 +42,16 @@ public class DataSeeder implements CommandLineRunner {
 
 
         //userRepository.findAll().forEach(user -> System.out.println(user.getName()+" "+user.getEmail()));
+    }
+
+    private void seedCategories() {
+        if (categoryRepository.findAll().isEmpty()) {
+            categoryRepository.save(new Category("Study"));
+            categoryRepository.save(new Category("Eat"));
+            categoryRepository.save(new Category("Train"));
+            categoryRepository.save(new Category("Whatever"));
+            System.out.println("Default categories inserted.");
+        }
     }
 
     public void addUser(User user) {
