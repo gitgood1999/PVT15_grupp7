@@ -20,11 +20,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
    @Transactional
    @Modifying
-   @Query("UPDATE User u SET u.available = NOT u.available WHERE u.id = :id")
-   void toggleAvailable(@Param("id") long id);
-
-   @Transactional
-   @Modifying
    @Query("UPDATE User u SET u.category = :category WHERE u.id = :userId")
    void setUserCategory(@Param("userId") Long userId, @Param("category") Category category);
 

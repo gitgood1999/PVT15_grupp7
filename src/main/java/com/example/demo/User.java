@@ -18,6 +18,9 @@ public class User {
     @JoinColumn(name = "category_id")
     private Category category;
 
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private Available availableStatus;
+
     public User() {
 
     }

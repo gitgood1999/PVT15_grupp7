@@ -13,14 +13,19 @@ public class DataSeeder implements CommandLineRunner {
     private static final Logger log = LoggerFactory.getLogger(DataSeeder.class);
     private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
+    private final AvailabilityService availabilityService;
+    private final AvailableRepository availableRepository;
 
-    public DataSeeder(UserRepository userRepository,  CategoryRepository categoryRepository) {
+    public DataSeeder(UserRepository userRepository,  CategoryRepository categoryRepository, AvailabilityService availabilityService, AvailableRepository availableRepository) {
         this.userRepository = userRepository;
         this.categoryRepository = categoryRepository;
+        this.availabilityService = availabilityService;
+        this.availableRepository = availableRepository;
     }
 
     @Override
     public void run(String... args) throws Exception {
+        
 
         // addUser(user); för att lägga till användare
 
@@ -71,22 +76,14 @@ public class DataSeeder implements CommandLineRunner {
 
     }
 
-    public boolean removeUser(User user) {
+    public void removeUser(User user) {
         if (checkIfUserExists(user)){
             userRepository.delete(user);
-            return true;
-        }return false;
+        }
     }
 
     public boolean checkIfUserExists(User user) {
         return userRepository.findByEmail(user.getEmail()) != null;
     }
 
-    public void toggleAvailable(User user) {
-        if (checkIfUserExists(user)){
-            userRepository.toggleAvailable(user.getId());
-        }else{
-            System.out.println("User does not exist");
-        }
-    }
 }
