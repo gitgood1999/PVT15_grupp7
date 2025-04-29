@@ -25,7 +25,7 @@ public class DataSeeder implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        
+        availabilityService.toggleAvailability(4L);
 
         // addUser(user); för att lägga till användare
 
