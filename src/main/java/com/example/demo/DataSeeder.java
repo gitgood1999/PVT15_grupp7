@@ -25,7 +25,9 @@ public class DataSeeder implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        availabilityService.toggleAvailability(4L);
+        System.out.println(findUserMatchList(userRepository.findById(7L)));
+
+        // availabilityService.toggleAvailability(4L); // denna togglar användarens availability och timestampar, timestamp och availabilty tas bort vid toggle också
 
         // addUser(user); för att lägga till användare
 
@@ -68,7 +70,7 @@ public class DataSeeder implements CommandLineRunner {
             if(user.getCategory().getName().equals("Whatever")){
                 return userRepository.findAllExcludingUser(user.getId());
             }else{
-                return userRepository.findByCategoryOrWhateverAndAvailableTrueExcludingUser(user.getId());
+                return userRepository.findByCategoryOrWhateverAndAvailableTrueExcludingUser(user.getCategory().getName(),user.getId());
             }
         }else{
             return null;

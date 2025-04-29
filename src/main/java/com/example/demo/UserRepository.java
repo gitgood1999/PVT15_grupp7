@@ -13,18 +13,28 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
    User findById(long id);
 
-   @Transactional
-   @Modifying
-   @Query("SELECT u FROM User u WHERE (u.category.name = :categoryName OR u.category.name = 'Whatever') AND u.available = true AND u.id != :userId")
-   List<User> findByCategoryOrWhateverAndAvailableTrueExcludingUser(@Param("userId") Long userId);
+   @Query("""
+    SELECT u FROM User u
+    JOIN Available a ON a.user = u
+    WHERE (u.category.name = :categoryName OR u.category.name = 'Whatever')
+    AND a.available = true
+    AND u.id != :userId
+""")
+   List<User> findByCategoryOrWhateverAndAvailableTrueExcludingUser(@Param("categoryName") String categoryName,
+                                                                    @Param("userId") Long userId);
+
 
    @Transactional
    @Modifying
    @Query("UPDATE User u SET u.category = :category WHERE u.id = :userId")
    void setUserCategory(@Param("userId") Long userId, @Param("category") Category category);
 
-   // Custom query to exclude a specific user based on their ID
-   @Query("SELECT u FROM User u WHERE (u.id != :userId) AND u.available = true")
+   @Query("""
+    SELECT u FROM User u
+    JOIN Available a ON a.user = u
+    WHERE u.id != :userId AND a.available = true
+""")
    List<User> findAllExcludingUser(@Param("userId") Long userId);
+
 
 }
