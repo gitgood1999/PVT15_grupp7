@@ -11,22 +11,22 @@ import java.util.List;
 public class DataSeeder implements CommandLineRunner {
 
     private static final Logger log = LoggerFactory.getLogger(DataSeeder.class);
-    private final UserRepository userRepository;
     private final CategoryRepository categoryRepository;
+    private final UserController userController;
     private final AvailabilityService availabilityService;
     private final AvailableRepository availableRepository;
 
-    public DataSeeder(UserRepository userRepository,  CategoryRepository categoryRepository, AvailabilityService availabilityService, AvailableRepository availableRepository) {
-        this.userRepository = userRepository;
+    public DataSeeder(CategoryRepository categoryRepository, UserController userController, AvailabilityService availabilityService, AvailableRepository availableRepository) {
         this.categoryRepository = categoryRepository;
+        this.userController = userController;
         this.availabilityService = availabilityService;
         this.availableRepository = availableRepository;
     }
 
     @Override
     public void run(String... args) throws Exception {
-
-
+        
+        System.out.println(userController.getUserRepository().findAllExcludingUser(19L));
         // userRepository.setUserCategory(); // fungerar att ändra kategori
 
         // availabilityService.toggleAvailability(4L); // denna togglar användarens availability och timestampar, timestamp och availabilty tas bort vid toggle också
@@ -54,37 +54,16 @@ public class DataSeeder implements CommandLineRunner {
         }
     }
 
-    public boolean addUser(User user) {
-        if (userRepository.findByEmail(user.getEmail()) != null){
-            System.out.println("User already exists");
-            return false;
-        } else {
-            userRepository.save(user);
-            return true;
-        }
-    }
 
-    public List<User> findUserMatchList(User user){
-        if(checkIfUserExists(user)){
-            if(user.getCategory().getName().equals("Whatever")){
-                return userRepository.findAllExcludingUser(user.getId());
-            }else{
-                return userRepository.findByCategoryOrWhateverAndAvailableTrueExcludingUser(user.getCategory().getName(),user.getId());
-            }
-        }else{
-            return null;
-        }
-
-    }
-
-    public void removeUser(User user) {
-        if (checkIfUserExists(user)){
-            userRepository.delete(user);
-        }
-    }
-
-    public boolean checkIfUserExists(User user) {
-        return userRepository.findByEmail(user.getEmail()) != null;
-    }
-
+//    public List<User> findUserMatchList(User user){
+//        if(checkIfUserExists(user)){
+//            if(user.getCategory().getName().equals("Whatever")){
+//                return userRepository.findAllExcludingUser(user.getId());
+//            }else{
+//                return userRepository.findByCategoryOrWhateverAndAvailableTrueExcludingUser(user.getCategory().getName(),user.getId());
+//            }
+//        }else{
+//            return null;
+//        }
+//    }
 }

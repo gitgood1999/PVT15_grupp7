@@ -24,12 +24,6 @@ public class UserController {
         return userRepository.findAll();
     }
 
-    // Lägg till en ny användare
-    @PostMapping
-    public User createUser(@RequestBody User user) {
-        return userRepository.save(user);
-    }
-
     // Ta bort en användare
     @DeleteMapping("/{id}")
     public void deleteUser(@PathVariable Long id) {
@@ -54,6 +48,12 @@ public class UserController {
         }
         return ResponseEntity.ok(user); //rätt login, returna användaren
     }
+
+    public UserRepository getUserRepository() {
+        return userRepository;
+    }
+
+
 
 
 
