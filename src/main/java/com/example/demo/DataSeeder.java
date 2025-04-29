@@ -14,32 +14,53 @@ public class DataSeeder implements CommandLineRunner {
     private final CategoryRepository categoryRepository;
     private final UserController userController;
     private final AvailabilityService availabilityService;
-    private final AvailableRepository availableRepository;
 
-    public DataSeeder(CategoryRepository categoryRepository, UserController userController, AvailabilityService availabilityService, AvailableRepository availableRepository) {
+    public DataSeeder(CategoryRepository categoryRepository, UserController userController, AvailabilityService availabilityService) {
         this.categoryRepository = categoryRepository;
         this.userController = userController;
         this.availabilityService = availabilityService;
-        this.availableRepository = availableRepository;
     }
 
     @Override
     public void run(String... args) throws Exception {
-        
-        System.out.println(userController.getUserRepository().findAllExcludingUser(19L));
+
+       // findUserMatchList(userController.getUserRepository().findById(18L)); // metoden fungerar
+
+//        availabilityService.toggleAvailability(4L);
+//        availabilityService.toggleAvailability(6L);
+//        availabilityService.toggleAvailability(7L);
+//        availabilityService.toggleAvailability(10L);
+//        availabilityService.toggleAvailability(11L);
+//        availabilityService.toggleAvailability(13L);
+//        availabilityService.toggleAvailability(14L);
+//        availabilityService.toggleAvailability(15L);
+//        availabilityService.toggleAvailability(16L);
+//        availabilityService.toggleAvailability(17L);
+//        availabilityService.toggleAvailability(18L);
+//        availabilityService.toggleAvailability(19L);
+//        availabilityService.toggleAvailability(20L);
+
+
+//        userController.getUserRepository().setUserCategory(4L, categoryRepository.findByName("Whatever"));
+//        userController.getUserRepository().setUserCategory(6L, categoryRepository.findByName("Study"));
+//        userController.getUserRepository().setUserCategory(7L, categoryRepository.findByName("Whatever"));
+//        userController.getUserRepository().setUserCategory(10L, categoryRepository.findByName("Train"));
+//        userController.getUserRepository().setUserCategory(11L, categoryRepository.findByName("Whatever"));
+//        userController.getUserRepository().setUserCategory(13L, categoryRepository.findByName("Eat"));
+//        userController.getUserRepository().setUserCategory(14L, categoryRepository.findByName("Eat"));
+//        userController.getUserRepository().setUserCategory(15L, categoryRepository.findByName("Eat"));
+//        userController.getUserRepository().setUserCategory(16L, categoryRepository.findByName("Train"));
+//        userController.getUserRepository().setUserCategory(17L, categoryRepository.findByName("Whatever"));
+//        userController.getUserRepository().setUserCategory(18L, categoryRepository.findByName("Study"));
+//        userController.getUserRepository().setUserCategory(19L, categoryRepository.findByName("Study"));
+//        userController.getUserRepository().setUserCategory(20L, categoryRepository.findByName("Train"));
+
+
         // userRepository.setUserCategory(); // fungerar att ändra kategori
 
         // availabilityService.toggleAvailability(4L); // denna togglar användarens availability och timestampar, timestamp och availabilty tas bort vid toggle också
 
-        // addUser(user); för att lägga till användare
-
-        //findUserMatchList(User user); // returnerar lista med potentiella matchningar där användaren som skickas med exkluderas
-
-        // removeUser(user); // ta bort specifik användare
-
         // seedCategories(); //tar bort tidigare kategorier och lägg till alla kategorier som skapas i metoden
-
-       //checkIfUserExists(user) // kolla om användare finns
 
     }
 
@@ -55,15 +76,15 @@ public class DataSeeder implements CommandLineRunner {
     }
 
 
-//    public List<User> findUserMatchList(User user){
-//        if(checkIfUserExists(user)){
-//            if(user.getCategory().getName().equals("Whatever")){
-//                return userRepository.findAllExcludingUser(user.getId());
-//            }else{
-//                return userRepository.findByCategoryOrWhateverAndAvailableTrueExcludingUser(user.getCategory().getName(),user.getId());
-//            }
-//        }else{
-//            return null;
-//        }
-//    }
+    public List<User> findUserMatchList(User user){
+        if(userController.getUserRepository().findByEmail(user.getEmail())!=null){
+            if(user.getCategory().getName().equals("Whatever")){
+                return userController.getUserRepository().findAllExcludingUser(user.getId());
+            }else{
+                return userController.getUserRepository().findByCategoryOrWhateverAndAvailableTrueExcludingUser(user.getCategory().getName(),user.getId());
+            }
+        }else{
+            return null;
+        }
+    }
 }

@@ -23,7 +23,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
    List<User> findByCategoryOrWhateverAndAvailableTrueExcludingUser(@Param("categoryName") String categoryName,
                                                                     @Param("userId") Long userId);
 
-
    @Transactional
    @Modifying
    @Query("UPDATE User u SET u.category = :category WHERE u.id = :userId")

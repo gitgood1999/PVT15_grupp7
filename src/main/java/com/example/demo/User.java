@@ -12,7 +12,6 @@ public class User {
     @Column(unique = true)
     private String email;
     private String password;
-    private boolean available;
 
     @ManyToOne
     @JoinColumn(name = "category_id")
@@ -28,7 +27,6 @@ public class User {
     public User(String name, String email) {
         this.name = name;
         this.email = email;
-        this.available = false;
     }
 
 
@@ -64,13 +62,9 @@ public class User {
         return category;
     }
 
-    public boolean isAvailable() {return available; }
-
     public void setCategory(Category category) {
         this.category = category;
     }
-
-    public void toggleAvailable() {this.available = !this.available;}
 
     public String toString(){ return name;}
 
