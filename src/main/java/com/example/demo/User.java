@@ -2,31 +2,42 @@ package com.example.demo;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
+
 @Entity
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+
     private String name;
+
     @Column(unique = true)
     private String email;
+
     private String password;
+
+    @Column(name = "avatar_index")
+    private Integer avatarIndex = 0;
 
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    private Available availableStatus;
+    private Available availableStatus; // Inget @PrimaryKeyJoinColumn här!
 
-    public User() {
+    // Standardkonstruktor
+    public User() {}
 
+
+    public Integer getAvatarIndex() {
+        return avatarIndex;
     }
 
-    public User(String name, String email) {
-        this.name = name;
-        this.email = email;
+    public void setAvatarIndex(Integer avatarIndex) {
+        this.avatarIndex = avatarIndex;
     }
 
 
@@ -69,6 +80,10 @@ public class User {
     public Available getAvailableStatus() {return availableStatus;}
 
     public String toString(){ return name;}
+
+    public void setAvailableStatus(Available availableStatus) {
+        this.availableStatus = availableStatus;
+    }
 
 
 }
