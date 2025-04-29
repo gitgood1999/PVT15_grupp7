@@ -66,6 +66,8 @@ public class User {
         this.category = category;
     }
 
+    public Available getAvailableStatus() {return availableStatus;}
+
     public String toString(){ return name;}
 
 

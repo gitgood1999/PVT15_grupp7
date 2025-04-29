@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import java.util.Comparator;
 import java.util.List;
 
 @Component
@@ -24,39 +25,11 @@ public class DataSeeder implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
+        // findUserMatch(userController.getUserRepository().findById(16L)); // findUserMatch funkar, returnerar den som väntat längst
+
        // findUserMatchList(userController.getUserRepository().findById(18L)); // metoden fungerar
 
-//        availabilityService.toggleAvailability(4L);
-//        availabilityService.toggleAvailability(6L);
-//        availabilityService.toggleAvailability(7L);
-//        availabilityService.toggleAvailability(10L);
-//        availabilityService.toggleAvailability(11L);
-//        availabilityService.toggleAvailability(13L);
-//        availabilityService.toggleAvailability(14L);
-//        availabilityService.toggleAvailability(15L);
-//        availabilityService.toggleAvailability(16L);
-//        availabilityService.toggleAvailability(17L);
-//        availabilityService.toggleAvailability(18L);
-//        availabilityService.toggleAvailability(19L);
-//        availabilityService.toggleAvailability(20L);
-
-
-//        userController.getUserRepository().setUserCategory(4L, categoryRepository.findByName("Whatever"));
-//        userController.getUserRepository().setUserCategory(6L, categoryRepository.findByName("Study"));
-//        userController.getUserRepository().setUserCategory(7L, categoryRepository.findByName("Whatever"));
-//        userController.getUserRepository().setUserCategory(10L, categoryRepository.findByName("Train"));
-//        userController.getUserRepository().setUserCategory(11L, categoryRepository.findByName("Whatever"));
-//        userController.getUserRepository().setUserCategory(13L, categoryRepository.findByName("Eat"));
-//        userController.getUserRepository().setUserCategory(14L, categoryRepository.findByName("Eat"));
-//        userController.getUserRepository().setUserCategory(15L, categoryRepository.findByName("Eat"));
-//        userController.getUserRepository().setUserCategory(16L, categoryRepository.findByName("Train"));
-//        userController.getUserRepository().setUserCategory(17L, categoryRepository.findByName("Whatever"));
-//        userController.getUserRepository().setUserCategory(18L, categoryRepository.findByName("Study"));
-//        userController.getUserRepository().setUserCategory(19L, categoryRepository.findByName("Study"));
-//        userController.getUserRepository().setUserCategory(20L, categoryRepository.findByName("Train"));
-
-
-        // userRepository.setUserCategory(); // fungerar att ändra kategori
+        // userController.getUserRepository().setUserCategory(); // fungerar att ändra kategori
 
         // availabilityService.toggleAvailability(4L); // denna togglar användarens availability och timestampar, timestamp och availabilty tas bort vid toggle också
 
@@ -87,4 +60,16 @@ public class DataSeeder implements CommandLineRunner {
             return null;
         }
     }
+
+    public User findUserMatch(User user) {
+        List<User> matchList = findUserMatchList(user);
+        if (matchList == null || matchList.isEmpty()) {
+            return null;
+        }
+        return matchList.stream()
+                .filter(u -> u.getAvailableStatus() != null && u.getAvailableStatus().getAvailableSince() != null)
+                .min(Comparator.comparing(u -> u.getAvailableStatus().getAvailableSince()))
+                .orElse(null);
+    }
+
 }
