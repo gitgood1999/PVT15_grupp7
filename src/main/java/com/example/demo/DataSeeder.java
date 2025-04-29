@@ -25,7 +25,9 @@ public class DataSeeder implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        System.out.println(findUserMatchList(userRepository.findById(7L)));
+
+
+        // userRepository.setUserCategory(); // fungerar att ändra kategori
 
         // availabilityService.toggleAvailability(4L); // denna togglar användarens availability och timestampar, timestamp och availabilty tas bort vid toggle också
 
@@ -35,17 +37,14 @@ public class DataSeeder implements CommandLineRunner {
 
         // removeUser(user); // ta bort specifik användare
 
-       // categoryRepository.deleteAll(); // ta bort alla kategorier
-
-        // seedCategories(); //lägg till alla kategorier som skapas i metoden
+        // seedCategories(); //tar bort tidigare kategorier och lägg till alla kategorier som skapas i metoden
 
        //checkIfUserExists(user) // kolla om användare finns
-
-        //userRepository.toggleAvailableById(1);
 
     }
 
     private void seedCategories() {
+        categoryRepository.deleteAll();
         if (categoryRepository.findAll().isEmpty()) {
             categoryRepository.save(new Category("Study"));
             categoryRepository.save(new Category("Eat"));
