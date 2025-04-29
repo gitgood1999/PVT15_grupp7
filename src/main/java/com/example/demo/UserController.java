@@ -46,5 +46,15 @@ public class UserController {
         return ResponseEntity.ok(savedUser);
     }
 
+    @PostMapping("/login")
+    public ResponseEntity<User> loginUser(@RequestBody User loginData) {
+        User user = userRepository.findByEmail(loginData.getEmail());
+        if (user == null || !user.getPassword().equals(loginData.getPassword())) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); //fel login
+        }
+        return ResponseEntity.ok(user); //rätt login, returna användaren
+    }
+
+
 
 }
