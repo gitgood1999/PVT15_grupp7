@@ -17,5 +17,9 @@ public class Chat {
 
     @OneToMany(mappedBy = "chat", cascade = CascadeType.ALL)
     private List<Message> messages = new ArrayList<>();
+
+    public void setMatch(Match match) {
+        this.match = match;
+    }
 }
 

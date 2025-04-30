@@ -27,6 +27,9 @@ public class UserController {
     @Autowired
     private AvailabilityService availabilityService;
 
+    @Autowired
+    private MatchService matchService;
+
     // hämta alla användare
 
     @GetMapping
@@ -124,6 +127,16 @@ public class UserController {
                 .filter(u -> u.getAvailableStatus() != null && u.getAvailableStatus().getAvailableSince() != null)
                 .min(Comparator.comparing(u -> u.getAvailableStatus().getAvailableSince()))
                 .orElse(null);
+    }
+
+    public boolean matchUser(User user) {
+        User user2 = findUserMatch(user);
+
+        if (user2 == null) {
+            return false;
+        }
+        matchService.createMatch(user, user2);
+        return true;
     }
 
 

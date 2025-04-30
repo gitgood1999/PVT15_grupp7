@@ -17,6 +17,16 @@ public class Match {
 
     @OneToOne(mappedBy = "match", cascade = CascadeType.ALL)
     private Chat chat;
+
+    public void setUser1(User user1) {
+        this.user1 = user1;
+    }
+    public void setUser2(User user2) {
+        this.user2 = user2;
+    }
+    public void setChat(Chat chat) {
+        this.chat = chat;
+    }
 }
 
 
