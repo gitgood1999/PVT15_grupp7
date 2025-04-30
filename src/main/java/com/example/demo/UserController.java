@@ -24,6 +24,9 @@ public class UserController {
     @Autowired
     private CategoryRepository categoryRepository;
 
+    @Autowired
+    private AvailabilityService availabilityService;
+
     // hämta alla användare
 
     @GetMapping
@@ -92,8 +95,13 @@ public class UserController {
         ));
     }
 
+    @PostMapping("/toggleAvailability")
+    public void toggleAvailability(@RequestBody User user) {
+        availabilityService.toggleAvailability(user.getId());
+    }
 
 
+    //hjälpmetod till findUserMatch
     private List<User> findUserMatchList(User user){
         if(userRepository.findByEmail(user.getEmail())!=null){
             if(user.getCategory().getName().equals("Whatever")){
