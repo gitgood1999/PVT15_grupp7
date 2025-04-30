@@ -49,27 +49,6 @@ public class DataSeeder implements CommandLineRunner {
     }
 
 
-    public List<User> findUserMatchList(User user){
-        if(userController.getUserRepository().findByEmail(user.getEmail())!=null){
-            if(user.getCategory().getName().equals("Whatever")){
-                return userController.getUserRepository().findAllExcludingUser(user.getId());
-            }else{
-                return userController.getUserRepository().findByCategoryOrWhateverAndAvailableTrueExcludingUser(user.getCategory().getName(),user.getId());
-            }
-        }else{
-            return null;
-        }
-    }
 
-    public User findUserMatch(User user) {
-        List<User> matchList = findUserMatchList(user);
-        if (matchList == null || matchList.isEmpty()) {
-            return null;
-        }
-        return matchList.stream()
-                .filter(u -> u.getAvailableStatus() != null && u.getAvailableStatus().getAvailableSince() != null)
-                .min(Comparator.comparing(u -> u.getAvailableStatus().getAvailableSince()))
-                .orElse(null);
-    }
 
 }

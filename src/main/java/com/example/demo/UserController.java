@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -92,8 +93,29 @@ public class UserController {
     }
 
 
-    public UserRepository getUserRepository() {
-        return userRepository;
+
+    private List<User> findUserMatchList(User user){
+        if(userRepository.findByEmail(user.getEmail())!=null){
+            if(user.getCategory().getName().equals("Whatever")){
+                return userRepository.findAllExcludingUser(user.getId());
+            }else{
+                return userRepository.findByCategoryOrWhateverAndAvailableTrueExcludingUser(user.getCategory().getName(),user.getId());
+            }
+        }else{
+            return null;
+        }
+    }
+
+    @GetMapping("/match")
+    public User findUserMatch(@RequestBody User user) {
+        List<User> matchList = findUserMatchList(user);
+        if (matchList == null || matchList.isEmpty()) {
+            return null;
+        }
+        return matchList.stream()
+                .filter(u -> u.getAvailableStatus() != null && u.getAvailableStatus().getAvailableSince() != null)
+                .min(Comparator.comparing(u -> u.getAvailableStatus().getAvailableSince()))
+                .orElse(null);
     }
 
 
