@@ -28,6 +28,27 @@ public class UserMatch {
     public void setChat(Chat chat) {
         this.chat = chat;
     }
+    public Long getId() {
+        return id;
+    }
+    public User getUser1() {
+        return user1;
+    }
+    public User getUser2() {
+        return user2;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if(this == o) return true;
+        if(o == null || getClass() != o.getClass()) return false;
+        UserMatch userMatch = (UserMatch) o;
+        return id.equals(userMatch.id);
+    }
+
+    public String toString() {
+        return user1.getEmail() + " " + user2.getEmail();
+    }
 }
 
 

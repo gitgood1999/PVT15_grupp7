@@ -17,17 +17,21 @@ public class DataSeeder implements CommandLineRunner {
     private final AvailabilityService availabilityService;
     private final MatchRepository matchRepository;
     private final MatchService matchService;
+    private final ChatRepository chatRepository;
 
-    public DataSeeder(CategoryRepository categoryRepository, UserController userController, AvailabilityService availabilityService, MatchRepository matchRepository, MatchService matchService) {
+    public DataSeeder(CategoryRepository categoryRepository, UserController userController, AvailabilityService availabilityService, MatchRepository matchRepository, MatchService matchService, ChatRepository chatRepository) {
         this.categoryRepository = categoryRepository;
         this.userController = userController;
         this.availabilityService = availabilityService;
         this.matchRepository = matchRepository;
         this.matchService = matchService;
+        this.chatRepository = chatRepository;
     }
 
     @Override
     public void run(String... args) throws Exception {
+
+        // Create Messages
 
         //matchService.createMatch(userController.findUserById(50L),userController.findUserById(51L)); // matcha 2 användare med varandra via id
 

@@ -43,6 +43,10 @@ public class Message {
         return sender;
     }
 
+    public void setChat(Chat chat) {
+        this.chat = chat;
+    }
+
     public String toString(){
         return content;
     }

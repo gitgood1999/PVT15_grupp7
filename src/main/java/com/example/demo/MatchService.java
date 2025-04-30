@@ -29,4 +29,10 @@ public class MatchService {
         return matchRepository.save(match); // cascades chat due to match's `@OneToOne(mappedBy = "match", cascade = ...)`
     }
 
+    public UserMatch getMatch(long id) {
+        if (matchRepository.findById(id) != null) {
+            return matchRepository.findById(id);
+        }
+        return null;
+    }
 }
