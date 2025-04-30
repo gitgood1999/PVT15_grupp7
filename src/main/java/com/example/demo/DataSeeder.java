@@ -29,7 +29,7 @@ public class DataSeeder implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
-        matchService.createMatch(userController.findUserById(50L),userController.findUserById(51L));
+        //matchService.createMatch(userController.findUserById(50L),userController.findUserById(51L)); // matcha 2 användare med varandra via id
 
 
 
