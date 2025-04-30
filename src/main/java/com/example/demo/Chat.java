@@ -13,12 +13,12 @@ public class Chat {
 
     @OneToOne
     @JoinColumn(name = "match_id")
-    private Match match;
+    private UserMatch match;
 
     @OneToMany(mappedBy = "chat", cascade = CascadeType.ALL)
     private List<Message> messages = new ArrayList<>();
 
-    public void setMatch(Match match) {
+    public void setMatch(UserMatch match) {
         this.match = match;
     }
 }

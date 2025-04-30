@@ -3,7 +3,8 @@ package com.example.demo;
 import jakarta.persistence.*;
 
 @Entity
-public class Match {
+@Table(name = "user_match")
+public class UserMatch {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

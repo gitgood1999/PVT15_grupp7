@@ -138,6 +138,13 @@ public class UserController {
         matchService.createMatch(user, user2);
         return true;
     }
+    public User findUserById(@PathVariable Long id) {
+        return userRepository.findById(id).orElse(null);
+    }
+
+    public UserRepository getUserRepository() {
+        return userRepository;
+    }
 
 
 

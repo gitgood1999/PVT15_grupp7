@@ -16,8 +16,8 @@ public class MatchService {
     }
 
     @Transactional
-    public Match createMatch(User user1, User user2) {
-        Match match = new Match();
+    public UserMatch createMatch(User user1, User user2) {
+        UserMatch match = new UserMatch();
         match.setUser1(user1);
         match.setUser2(user2);
 

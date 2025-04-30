@@ -15,15 +15,25 @@ public class DataSeeder implements CommandLineRunner {
     private final CategoryRepository categoryRepository;
     private final UserController userController;
     private final AvailabilityService availabilityService;
+    private final MatchRepository matchRepository;
+    private final MatchService matchService;
 
-    public DataSeeder(CategoryRepository categoryRepository, UserController userController, AvailabilityService availabilityService) {
+    public DataSeeder(CategoryRepository categoryRepository, UserController userController, AvailabilityService availabilityService, MatchRepository matchRepository, MatchService matchService) {
         this.categoryRepository = categoryRepository;
         this.userController = userController;
         this.availabilityService = availabilityService;
+        this.matchRepository = matchRepository;
+        this.matchService = matchService;
     }
 
     @Override
     public void run(String... args) throws Exception {
+
+        matchService.createMatch(userController.findUserById(50L),userController.findUserById(51L));
+
+
+
+
 
         // findUserMatch(userController.getUserRepository().findById(16L)); // findUserMatch funkar, returnerar den som väntat längst
 
