@@ -6,6 +6,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -39,6 +40,28 @@ public class MatchServiceTest {
         assertThat(chat).isNotNull();
         assertThat(chat.getMatch()).isEqualTo(match);
         assertThat(chat.getMessages()).isEmpty();  // initial state
+    }
+
+    @Test
+    @Transactional
+    public void testSendingMessages(){
+        UserMatch match = matchService.getMatch(6L);
+        Message message1 = new Message();
+        message1.setSender(match.getUser1());
+        message1.setChat(match.getChat());
+        message1.setContent("Hello from user1");
+        message1.setTimestamp(LocalDateTime.now());
+
+        Message message2 = new Message();
+        message2.setSender(match.getUser2());
+        message2.setChat(match.getChat());
+        message2.setContent("Hi there from user2");
+        message2.setTimestamp(LocalDateTime.now());
+
+        // Persist messages
+        match.getChat().getMessages().add(message1);
+        match.getChat().getMessages().add(message2);
+        chatRepository.save(match.getChat());  // cascade save should handle messages if properly configured
     }
 }
 

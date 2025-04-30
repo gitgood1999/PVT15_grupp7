@@ -25,6 +25,10 @@ public class UserMatch {
     public void setUser2(User user2) {
         this.user2 = user2;
     }
+    public Chat getChat() {
+        return chat;
+    }
+
     public void setChat(Chat chat) {
         this.chat = chat;
     }

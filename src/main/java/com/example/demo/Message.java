@@ -14,11 +14,11 @@ public class Message {
     private String content;
     private LocalDateTime timestamp;
 
-    @ManyToOne(optional = false)
+    @ManyToOne
     @JoinColumn(name = "sender_id", nullable = false)
     private User sender;
 
-    @ManyToOne(optional = false)
+    @ManyToOne
     @JoinColumn(name = "chat_id", nullable = false)
     private Chat chat;
 
@@ -37,6 +37,18 @@ public class Message {
 
     public LocalDateTime getTimestamp() {
         return timestamp;
+    }
+
+    public void setSender(User sender) {
+        this.sender = sender;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public void setTimestamp(LocalDateTime timestamp) {
+        this.timestamp = timestamp;
     }
 
     public User getSender() {

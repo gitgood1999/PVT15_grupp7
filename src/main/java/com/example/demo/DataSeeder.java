@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 
@@ -18,20 +19,43 @@ public class DataSeeder implements CommandLineRunner {
     private final MatchRepository matchRepository;
     private final MatchService matchService;
     private final ChatRepository chatRepository;
+    private final MessageRepository messageRepository;
 
-    public DataSeeder(CategoryRepository categoryRepository, UserController userController, AvailabilityService availabilityService, MatchRepository matchRepository, MatchService matchService, ChatRepository chatRepository) {
+    public DataSeeder(CategoryRepository categoryRepository, UserController userController, AvailabilityService availabilityService, MatchRepository matchRepository, MatchService matchService, ChatRepository chatRepository, MessageRepository messageRepository) {
         this.categoryRepository = categoryRepository;
         this.userController = userController;
         this.availabilityService = availabilityService;
         this.matchRepository = matchRepository;
         this.matchService = matchService;
         this.chatRepository = chatRepository;
+        this.messageRepository = messageRepository;
     }
 
     @Override
     public void run(String... args) throws Exception {
 
-        // Create Messages
+        //NEDANSTÅENDE KODBLOCK LÄGGER TILL MEDDELANDEN I MESSAGE SOM ÄR KOPPLADE TILL CHAT OCH DÄRMED USERMATCH
+//        UserMatch match = matchService.getMatch(6L);
+//        Message message1 = new Message();
+//        message1.setSender(match.getUser1());
+//        message1.setChat(match.getChat());
+//        message1.setContent("Hello from user1");
+//        message1.setTimestamp(LocalDateTime.now());
+//
+//        Message message2 = new Message();
+//        message2.setSender(match.getUser2());
+//        message2.setChat(match.getChat());
+//        message2.setContent("Hi there from user2");
+//        message2.setTimestamp(LocalDateTime.now());
+//        messageRepository.save(message1);
+//        messageRepository.save(message2);
+//
+//        // Persist messages
+//        match.getChat().getMessages().add(message1);
+//        match.getChat().getMessages().add(message2);
+//        chatRepository.save(match.getChat());
+
+
 
         //matchService.createMatch(userController.findUserById(50L),userController.findUserById(51L)); // matcha 2 användare med varandra via id
 
