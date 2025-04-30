@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -71,17 +72,25 @@ public class UserController {
 
 
 
-    //login
     @PostMapping("/login")
-    public ResponseEntity<User> loginUser(@RequestBody User loginData) {
-
+    public ResponseEntity<Object> loginUser(@RequestBody User loginData) {
         User user = userRepository.findByEmail(loginData.getEmail());
 
         if (user == null || !user.getPassword().equals(loginData.getPassword())) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); //fel login
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("message", "Felaktig e-post eller lösenord"));
         }
-        return ResponseEntity.ok(user); //rätt login, returna användaren
+
+        // returnera det man vill använda i Flutter
+        return ResponseEntity.ok(Map.of(
+                "id", user.getId(),
+                "name", user.getName(),
+                "email", user.getEmail(),
+                "avatarIndex", user.getAvatarIndex()
+                // man kan lägga till mer om dman behöver, tex categoryId eller availableStatus
+        ));
     }
+
 
     public UserRepository getUserRepository() {
         return userRepository;

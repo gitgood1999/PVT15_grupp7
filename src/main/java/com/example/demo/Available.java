@@ -1,5 +1,6 @@
 package com.example.demo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
@@ -12,6 +13,7 @@ public class Available {
     @OneToOne
     @MapsId // använder samma ID som User
     @JoinColumn(name = "id") // FK och PK är samma kolumn
+    @JsonIgnore
     private User user;
 
     @Column(nullable = false)
