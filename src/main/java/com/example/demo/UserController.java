@@ -110,7 +110,7 @@ public class UserController {
             if(user.getCategory().getName().equals("Whatever")){
                 return userRepository.findAllExcludingUser(user.getId());
             }else{
-                return userRepository.findByCategoryOrWhateverAndAvailableTrueExcludingUser(user.getCategory().getName(),user.getId());
+                return userRepository.findByCategoryOrWhateverAndAvailableTrueExcludingUser(user.getCategory().getName(),user.getId(), user.getPreviousMatches());
             }
         }else{
             return null;

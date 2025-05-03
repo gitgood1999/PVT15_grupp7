@@ -2,6 +2,9 @@ package com.example.demo;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 @Entity
 public class User {
@@ -27,8 +30,21 @@ public class User {
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private Available availableStatus; // Inget @PrimaryKeyJoinColumn här!
 
+    // Previous matches
+    @ManyToMany
+    @JoinTable(
+            name = "user_previous_matches",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "previous_user_id")
+    )
+    private List<User> previousMatches = new ArrayList<>();
+
     // Standardkonstruktor
     public User() {}
+
+    public List<User> getPreviousMatches() {
+        return previousMatches;
+    }
 
 
     public Integer getAvatarIndex() {

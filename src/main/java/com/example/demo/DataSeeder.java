@@ -20,8 +20,9 @@ public class DataSeeder implements CommandLineRunner {
     private final MatchService matchService;
     private final ChatRepository chatRepository;
     private final MessageRepository messageRepository;
+    private final UserRepository userRepository;
 
-    public DataSeeder(CategoryRepository categoryRepository, UserController userController, AvailabilityService availabilityService, MatchRepository matchRepository, MatchService matchService, ChatRepository chatRepository, MessageRepository messageRepository) {
+    public DataSeeder(CategoryRepository categoryRepository, UserController userController, AvailabilityService availabilityService, MatchRepository matchRepository, MatchService matchService, ChatRepository chatRepository, MessageRepository messageRepository, UserRepository userRepository) {
         this.categoryRepository = categoryRepository;
         this.userController = userController;
         this.availabilityService = availabilityService;
@@ -29,26 +30,27 @@ public class DataSeeder implements CommandLineRunner {
         this.matchService = matchService;
         this.chatRepository = chatRepository;
         this.messageRepository = messageRepository;
+        this.userRepository = userRepository;
     }
 
     @Override
     public void run(String... args) throws Exception {
 
+        UserMatch match = matchService.createMatch(userRepository.findById(50L),userRepository.findById(51L));
         //NEDANSTÅENDE KODBLOCK LÄGGER TILL MEDDELANDEN I MESSAGE SOM ÄR KOPPLADE TILL CHAT OCH DÄRMED USERMATCH
-//        UserMatch match = matchService.getMatch(6L);
-//        Message message1 = new Message();
-//        message1.setSender(match.getUser1());
-//        message1.setChat(match.getChat());
-//        message1.setContent("Hello from user1");
-//        message1.setTimestamp(LocalDateTime.now());
-//
-//        Message message2 = new Message();
-//        message2.setSender(match.getUser2());
-//        message2.setChat(match.getChat());
-//        message2.setContent("Hi there from user2");
-//        message2.setTimestamp(LocalDateTime.now());
-//        messageRepository.save(message1);
-//        messageRepository.save(message2);
+        Message message1 = new Message();
+        message1.setSender(match.getUser1());
+        message1.setChat(match.getChat());
+        message1.setContent("Hello from user1");
+        message1.setTimestamp(LocalDateTime.now());
+
+        Message message2 = new Message();
+        message2.setSender(match.getUser2());
+        message2.setChat(match.getChat());
+        message2.setContent("Hi there from user2");
+        message2.setTimestamp(LocalDateTime.now());
+        messageRepository.save(message1);
+        messageRepository.save(message2);
 //
 //        // Persist messages
 //        match.getChat().getMessages().add(message1);
