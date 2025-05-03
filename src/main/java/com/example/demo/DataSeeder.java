@@ -36,6 +36,8 @@ public class DataSeeder implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
+
+
         //Rensar alla matchningar och chattar samt tidigare matchningar
 //        matchRepository.deleteAll();
 //        chatRepository.deleteAll();

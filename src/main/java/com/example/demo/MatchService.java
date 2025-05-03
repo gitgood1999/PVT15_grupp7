@@ -12,11 +12,13 @@ public class MatchService {
     private final MatchRepository matchRepository;
     private final ChatRepository chatRepository;
     private final UserRepository userRepository;
+    private final AvailabilityService availabilityService;
 
-    public MatchService(MatchRepository matchRepository, ChatRepository chatRepository, UserRepository userRepository) {
+    public MatchService(MatchRepository matchRepository, ChatRepository chatRepository, UserRepository userRepository, AvailabilityService availabilityService) {
         this.matchRepository = matchRepository;
         this.chatRepository = chatRepository;
         this.userRepository = userRepository;
+        this.availabilityService = availabilityService;
     }
 
     @Transactional
@@ -48,6 +50,9 @@ public class MatchService {
 
         userRepository.save(user1);
         userRepository.save(user2);
+
+        availabilityService.toggleAvailability(user1.getId());
+        availabilityService.toggleAvailability(user2.getId());
 
         return matchRepository.save(match);
     }
