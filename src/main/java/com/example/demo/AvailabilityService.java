@@ -42,5 +42,10 @@ public class AvailabilityService {
         availableRepository.save(available);
     }
 
+    public void save(Available available) {
+        availableRepository.save(available);
+    }
+
+
 }
 

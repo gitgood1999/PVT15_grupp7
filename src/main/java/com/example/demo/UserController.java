@@ -73,9 +73,14 @@ public class UserController {
         Available available = new Available(false, null, savedUser);
         savedUser.setAvailableStatus(available);
 
+// spara först användaren
         savedUser = userRepository.save(savedUser);
 
+// sen spara available separat också, för säkerhets skull
+        availabilityService.save(available);  // Du har en AvailabilityService – använd den!
+
         return ResponseEntity.ok(savedUser);
+
     }
 
 
@@ -119,6 +124,14 @@ public class UserController {
         userRepository.save(user);
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<User> getUserWithAvailability(@PathVariable Long id) {
+        return userRepository.findById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
 
 
 

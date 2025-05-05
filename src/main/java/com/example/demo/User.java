@@ -1,5 +1,6 @@
 package com.example.demo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -27,7 +28,8 @@ public class User {
     @JoinColumn(name = "category_id")
     private Category category;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Available availableStatus; // Inget @PrimaryKeyJoinColumn här!
 
     // Previous matches
