@@ -62,8 +62,7 @@ public class MatchService {
         List<User> prev = source.getPreviousMatches();
         if (!prev.contains(target)) {
             if (prev.size() >= 5) {
-                //Koden körs inte, removeFirst() är inte en funktion som finns i util.List
-                //prev.removeFirst();
+                prev.remove(0);
             }
             prev.add(target);
         }

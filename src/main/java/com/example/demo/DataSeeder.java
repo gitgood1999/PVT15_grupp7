@@ -35,7 +35,39 @@ public class DataSeeder implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
+        System.out.println(messageRepository.findByChatId(29L));
 
+
+
+//        availabilityService.toggleAvailability(50L);
+//        availabilityService.toggleAvailability(4L);
+//
+//        matchService.createMatch(userRepository.findById(50L), userRepository.findById(4L));
+//        availabilityService.toggleAvailability(50L);
+//        availabilityService.toggleAvailability(22L);
+//        userRepository.setUserCategory(22L,categoryRepository.findByName("Whatever"));
+//
+//        matchService.createMatch(userRepository.findById(50L), userRepository.findById(22L));
+//
+//        availabilityService.toggleAvailability(50L);
+//        availabilityService.toggleAvailability(28L);
+//        userController.getUserRepository().setUserCategory(28L,categoryRepository.findByName("Whatever"));
+//
+//        matchService.createMatch(userRepository.findById(50L), userRepository.findById(28L));
+//        availabilityService.toggleAvailability(50L);
+//        availabilityService.toggleAvailability(27L);
+//        userController.getUserRepository().setUserCategory(27L,categoryRepository.findByName("Whatever"));
+//
+//        matchService.createMatch(userRepository.findById(50L), userRepository.findById(27L));
+//        availabilityService.toggleAvailability(50L);
+//        availabilityService.toggleAvailability(26L);
+//        userController.getUserRepository().setUserCategory(26L,categoryRepository.findByName("Whatever"));
+//        matchService.createMatch(userRepository.findById(50L), userRepository.findById(26L));
+//
+//        availabilityService.toggleAvailability(50L);
+//        availabilityService.toggleAvailability(25L);
+//        userController.getUserRepository().setUserCategory(25L,categoryRepository.findByName("Whatever"));
+//        matchService.createMatch(userRepository.findById(50L), userRepository.findById(25L));
 
 
         //Rensar alla matchningar och chattar samt tidigare matchningar
@@ -44,24 +76,26 @@ public class DataSeeder implements CommandLineRunner {
 //        messageRepository.deleteAll();
 //        userController.clearPreviousMatchesForAllUsers();
 
-//        UserMatch match = matchService.createMatch(userRepository.findById(50L),userRepository.findById(51L));
-//        Message message1 = new Message();
-//        message1.setSender(match.getUser1());
-//        message1.setChat(match.getChat());
-//        message1.setContent("Hello from user1");
-//        message1.setTimestamp(LocalDateTime.now());
+//        UserMatch match = matchService.getMatch(29L);
 //
-//        Message message2 = new Message();
-//        message2.setSender(match.getUser2());
-//        message2.setChat(match.getChat());
-//        message2.setContent("Hi there from user2");
-//        message2.setTimestamp(LocalDateTime.now());
-//        messageRepository.save(message1);
-//        messageRepository.save(message2);
+//
+//        Message message3 = new Message();
+//        message3.setSender(match.getUser1());
+//        message3.setChat(match.getChat());
+//        message3.setContent("lorem ipsum");
+//        message3.setTimestamp(LocalDateTime.now());
+//
+//        Message message4 = new Message();
+//        message4.setSender(match.getUser2());
+//        message4.setChat(match.getChat());
+//        message4.setContent("Lorem");
+//        message4.setTimestamp(LocalDateTime.now());
+//        messageRepository.save(message3);
+//        messageRepository.save(message4);
 //
 //        // Persist messages
-//        match.getChat().getMessages().add(message1);
-//        match.getChat().getMessages().add(message2);
+//        match.getChat().getMessages().add(message3);
+//        match.getChat().getMessages().add(message4);
 //        chatRepository.save(match.getChat());
 
 

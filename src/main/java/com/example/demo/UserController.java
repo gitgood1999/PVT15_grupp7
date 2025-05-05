@@ -100,9 +100,11 @@ public class UserController {
     }
 
     @PostMapping("/toggleAvailability")
-    public void toggleAvailability(@RequestBody User user) {
+    public ResponseEntity<Void> toggleAvailability(@RequestBody User user) {
         availabilityService.toggleAvailability(user.getId());
+        return ResponseEntity.ok().build(); // 200 OK with no content
     }
+
 
 
     //hjälpmetod till findUserMatch
@@ -129,7 +131,7 @@ public class UserController {
                 .min(Comparator.comparing(u -> u.getAvailableStatus().getAvailableSince()))
                 .orElse(null);
     }
-
+    @PostMapping
     public boolean matchUser(User user) {
         User user2 = findUserMatch(user);
 
@@ -155,6 +157,13 @@ public class UserController {
         }
         userRepository.saveAll(allUsers);
     }
+    @PutMapping("/user/avatar")
+    public ResponseEntity<Void> setAvatarIndex(@RequestBody User user) {
+        user.setAvatarIndex(user.getAvatarIndex());
+        userRepository.save(user); // don't forget to persist the change!
+        return ResponseEntity.ok().build();
+    }
+
 
 
 
