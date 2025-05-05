@@ -108,7 +108,7 @@
 		<repository>
 			<id>internal.repo</id>
 			<name>Internal repo</name>
-			<url>gitea.dsv.su.se/lial9067/ShakeIt</url>
+			<url>gitea.dsv.su.se/lial9067/ShakeIt.git</url>
 		</repository>
 	</distributionManagement>
 
