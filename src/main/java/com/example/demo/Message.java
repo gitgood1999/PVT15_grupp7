@@ -39,6 +39,8 @@ public class Message {
         return timestamp;
     }
 
+    public Chat getChat(){ return chat; }
+
     public void setSender(User sender) {
         this.sender = sender;
     }

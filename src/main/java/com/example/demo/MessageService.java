@@ -13,6 +13,10 @@ public class MessageService {
         this.messageRepository = messageRepository;
     }
 
+    public MessageRepository getMessageRepository() {
+        return messageRepository;
+    }
+
     public List<Message> getMessagesByChatId(long chatId){
         return messageRepository.findByChatId(chatId);
     }

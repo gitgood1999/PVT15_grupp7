@@ -19,23 +19,24 @@ public class DataSeeder implements CommandLineRunner {
     private final MatchRepository matchRepository;
     private final MatchService matchService;
     private final ChatRepository chatRepository;
-    private final MessageRepository messageRepository;
+    private final MessageController messageController;
     private final UserRepository userRepository;
 
-    public DataSeeder(CategoryRepository categoryRepository, UserController userController, AvailabilityService availabilityService, MatchRepository matchRepository, MatchService matchService, ChatRepository chatRepository, MessageRepository messageRepository, UserRepository userRepository) {
+
+    public DataSeeder(CategoryRepository categoryRepository, UserController userController, AvailabilityService availabilityService, MatchRepository matchRepository, MatchService matchService, ChatRepository chatRepository, MessageController messageController, UserRepository userRepository, MessageService messageService) {
         this.categoryRepository = categoryRepository;
         this.userController = userController;
         this.availabilityService = availabilityService;
         this.matchRepository = matchRepository;
         this.matchService = matchService;
         this.chatRepository = chatRepository;
-        this.messageRepository = messageRepository;
         this.userRepository = userRepository;
+        this.messageController= messageController;
     }
 
     @Override
     public void run(String... args) throws Exception {
-        System.out.println(messageRepository.findByChatId(29L));
+           // messageController.createMessage(new MessageDTO(29L, 50L, "does createMessage work"));
 
 
 
