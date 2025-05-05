@@ -108,7 +108,7 @@
 		<repository>
 			<id>internal.repo</id>
 			<name>Internal repo</name>
-			<url>git@gitea.dsv.su.se/FelixAmadeus/PVT_grupp7.git</url>
+			<url>gitea.dsv.su.se/lial9067/ShakeIt</url>
 		</repository>
 	</distributionManagement>
 
