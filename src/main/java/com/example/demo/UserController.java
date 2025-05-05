@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
@@ -100,11 +101,26 @@ public class UserController {
         ));
     }
 
-    @PostMapping("/toggleAvailability")
-    public ResponseEntity<Void> toggleAvailability(@RequestBody User user) {
-        availabilityService.toggleAvailability(user.getId());
-        return ResponseEntity.ok().build(); // 200 OK with no content
+
+    @PutMapping("/{id}/toggleAvailability")
+    public ResponseEntity<Void> updateAvailability(@PathVariable Long id, @RequestBody Map<String, Boolean> availabilityData) {
+        // hämta användaren från databasen
+        User user = userRepository.findById(id).orElse(null);
+        if (user == null) return ResponseEntity.notFound().build();
+
+        //
+        boolean available = availabilityData.get("available");
+
+        // uppdatera availability och sätt timestamp om true, annars nollställ
+        user.getAvailableStatus().setAvailable(available);
+        user.getAvailableStatus().setAvailableSince(available ? LocalDateTime.now() : null);
+
+        // spara ändringen till databasen
+        userRepository.save(user);
+        return ResponseEntity.ok().build();
     }
+
+
 
 
 
