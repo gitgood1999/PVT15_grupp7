@@ -45,7 +45,8 @@ public class UserController {
         userRepository.deleteById(id);
     }
 
-    //registrering
+
+    //registrering av användare för första gången
 
     @PostMapping("/register")
     public ResponseEntity<User> registerUser(@RequestBody User user) {
@@ -79,7 +80,7 @@ public class UserController {
 
 
 
-
+    //metoden för att logga in
     @PostMapping("/login")
     public ResponseEntity<Object> loginUser(@RequestBody User loginData) {
         User user = userRepository.findByEmail(loginData.getEmail());
@@ -157,12 +158,43 @@ public class UserController {
         }
         userRepository.saveAll(allUsers);
     }
-    @PutMapping("/user/avatar")
-    public ResponseEntity<Void> setAvatarIndex(@RequestBody User user) {
-        user.setAvatarIndex(user.getAvatarIndex());
-        userRepository.save(user); // don't forget to persist the change!
+
+
+    //metod för att uppdatera avatar via settings
+    @PutMapping("/updateAvatar")
+    public ResponseEntity<?> updateAvatar(@RequestBody Map<String, Object> data) {
+        String email = (String) data.get("email");
+        Integer avatarIndex = (Integer) data.get("avatarIndex");
+
+        User user = userRepository.findByEmail(email);
+        if (user == null) return ResponseEntity.notFound().build();
+
+        user.setAvatarIndex(avatarIndex);
+        userRepository.save(user);
         return ResponseEntity.ok().build();
     }
+
+
+    //metod för uppdatering av användarnamn via settings
+    @PutMapping("/updateName")
+    public ResponseEntity<?> updateName(@RequestBody Map<String, String> data) {
+        String email = data.get("email");
+        String newName = data.get("name");
+
+        User user = userRepository.findByEmail(email);
+        if (user == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        user.setName(newName);
+        userRepository.save(user);
+
+        return ResponseEntity.ok().build();
+    }
+
+
+
+
 
 
 
