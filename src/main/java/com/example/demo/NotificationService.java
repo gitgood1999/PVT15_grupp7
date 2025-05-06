@@ -13,9 +13,9 @@ public class NotificationService {
         this.messagingTemplate = messagingTemplate;
     }
 
-    public void sendDatabaseChangeNotification(String message) {
+    public void sendDatabaseChangeNotification(String message, String email) {
         // This sends the message to all clients subscribed to /topic/db-updates
-        messagingTemplate.convertAndSend("/topic/db-updates", message);
+        messagingTemplate.convertAndSend("/topic/" + email, message);
     }
 }
 

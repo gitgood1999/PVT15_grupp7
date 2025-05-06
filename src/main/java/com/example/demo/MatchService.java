@@ -13,12 +13,14 @@ public class MatchService {
     private final ChatRepository chatRepository;
     private final UserRepository userRepository;
     private final AvailabilityService availabilityService;
+    private final NotificationService notificationService;
 
-    public MatchService(MatchRepository matchRepository, ChatRepository chatRepository, UserRepository userRepository, AvailabilityService availabilityService) {
+    public MatchService(MatchRepository matchRepository, ChatRepository chatRepository, UserRepository userRepository, AvailabilityService availabilityService, NotificationService notificationService) {
         this.matchRepository = matchRepository;
         this.chatRepository = chatRepository;
         this.userRepository = userRepository;
         this.availabilityService = availabilityService;
+        this.notificationService = notificationService;
     }
 
     @Transactional
@@ -54,7 +56,14 @@ public class MatchService {
         availabilityService.toggleAvailability(user1.getId());
         availabilityService.toggleAvailability(user2.getId());
 
+        matchNotification(user1, user2);
+
         return matchRepository.save(match);
+    }
+
+    private void matchNotification(User user1, User user2) {
+        notificationService.sendDatabaseChangeNotification("You have a new match!", user1.getEmail());
+        notificationService.sendDatabaseChangeNotification("You have a new match!", user2.getEmail());
     }
 
 
