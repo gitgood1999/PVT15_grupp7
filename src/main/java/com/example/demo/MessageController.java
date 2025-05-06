@@ -14,11 +14,13 @@ public class MessageController {
     private final MessageService messageService;
     private final ChatRepository chatRepository;
     private final UserRepository userRepository;
+    private final NotificationService notificationService;
 
-    public MessageController(MessageService messageService, ChatRepository chatRepository, UserRepository userRepository) {
+    public MessageController(MessageService messageService, ChatRepository chatRepository, UserRepository userRepository, NotificationService notificationService) {
         this.messageService = messageService;
         this.chatRepository = chatRepository;
         this.userRepository = userRepository;
+        this.notificationService = notificationService;
     }
 
     @GetMapping("/chat/{chatId}")
@@ -46,6 +48,9 @@ public class MessageController {
         message.setTimestamp(LocalDateTime.now());
 
         Message saved = messageService.getMessageRepository().save(message);
+
+        notificationService.sendDatabaseChangeNotification("You have a new message!",match.getUser2().getEmail());;
+
         return ResponseEntity.ok(saved);
     }
 
