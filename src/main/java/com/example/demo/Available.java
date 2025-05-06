@@ -19,7 +19,14 @@ public class Available {
     @Column(nullable = false)
     private boolean available;
 
+    @Column(nullable = true)
     private LocalDateTime availableSince;
+
+    @Column(nullable = true)
+    private LocalDateTime availableUntil;
+
+// + getters & setters
+
 
     public Available() {}
 
@@ -66,4 +73,13 @@ public class Available {
     public void setUser(User user) {
         this.user = user;
     }
+
+    public LocalDateTime getAvailableUntil() {
+        return availableUntil;
+    }
+
+    public void setAvailableUntil(LocalDateTime availableUntil) {
+        this.availableUntil = availableUntil;
+    }
+
 }
