@@ -1,5 +1,4 @@
 package com.example.demo;
-import java.util.Optional;
 
 import com.example.demo.User;
 import com.example.demo.UserRepository;
@@ -105,53 +104,22 @@ public class UserController {
 
 
     @PutMapping("/{id}/toggleAvailability")
-    public ResponseEntity<Void> updateAvailability(@PathVariable Long id, @RequestBody Map<String, Object> availabilityData) {
+    public ResponseEntity<Void> updateAvailability(@PathVariable Long id, @RequestBody Map<String, Boolean> availabilityData) {
         // hämta användaren från databasen
         User user = userRepository.findById(id).orElse(null);
         if (user == null) return ResponseEntity.notFound().build();
 
-        // plockar ut värden från JSON-requesten
-        boolean available = (Boolean) availabilityData.get("available");
-        Integer totalMinutes = availabilityData.containsKey("totalMinutes")
-                ? (Integer) availabilityData.get("totalMinutes")
-                : null;
+        
+        boolean available = availabilityData.get("available");
 
-        Integer activityId = availabilityData.containsKey("activityId")
-                ? (Integer) availabilityData.get("activityId")
-                : null;
+        // uppdatera availability och sätt timestamp om true, annars nollställ
+        user.getAvailableStatus().setAvailable(available);
+        user.getAvailableStatus().setAvailableSince(available ? LocalDateTime.now() : null);
 
-        // hämtar eller skapar Available-objektet
-        Available status = user.getAvailableStatus();
-        if (status == null) {
-            status = new Available();
-            status.setUser(user);
-        }
-
-        status.setAvailable(available);
-
-        if (available) {
-            LocalDateTime now = LocalDateTime.now();
-            status.setAvailableSince(now);
-            status.setAvailableUntil(totalMinutes != null ? now.plusMinutes(totalMinutes) : null);
-        } else {
-            status.setAvailableSince(null);
-            status.setAvailableUntil(null);
-        }
-
-        // om användaren har valt en kategori, koppla den till user
-        if (activityId != null) {
-            Category category = categoryRepository.findById(activityId.longValue());
-            user.setCategory(category); // här sätter vi aktiviteten direkt på användaren
-        }
-
-        // spara ändringar
-        user.setAvailableStatus(status);
+        // spara ändringen till databasen
         userRepository.save(user);
-
         return ResponseEntity.ok().build();
     }
-
-
 
     @GetMapping("/{id}")
     public ResponseEntity<User> getUserWithAvailability(@PathVariable Long id) {
@@ -231,7 +199,9 @@ public class UserController {
 
 
         //TEST FUNKTION FÖR WEBSOCKET
-        //notificationService.sendDatabaseChangeNotification("User " + user.getId() + " updated avatar to index " + avatarIndex);
+        notificationService.sendDatabaseChangeNotification(
+                "User " + user.getId() + " updated avatar to index " + avatarIndex
+        );
 
 
         return ResponseEntity.ok().build();

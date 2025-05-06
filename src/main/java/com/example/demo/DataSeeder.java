@@ -36,6 +36,15 @@ public class DataSeeder implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
+
+//        System.out.println(userController.authenticate("lösen",userRepository.findByEmail("hober@student.su.se").getPassword()));
+//        User user = new User();
+//        user.setName("Daniel");
+//        user.setPassword("1234");
+//        user.setEmail("danne@outlook.se");
+//        userController.registerUser(user);
+//        System.out.println(userController.authenticate("1234",userController.getUserRepository().findByEmail("danne@outlook.se").getPassword()));
+//        System.out.println(userController.getUserRepository().findByEmail("danne@outlook.se").getPassword());
            // messageController.createMessage(new MessageDTO(29L, 50L, "does createMessage work"));
 
 
