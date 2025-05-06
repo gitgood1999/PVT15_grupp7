@@ -73,7 +73,7 @@ public class UserController {
         savedUser = userRepository.save(savedUser);
 
 // sen spara available separat också, för säkerhets skull
-        availabilityService.save(available);  // Du har en AvailabilityService – använd den!
+        availabilityService.save(available);
 
         return ResponseEntity.ok(savedUser);
 
