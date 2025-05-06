@@ -64,16 +64,10 @@ public class UserController {
             defaultCategory = new Category("Standard Category");
             categoryRepository.save(defaultCategory);
         }
-        user.setCategory(defaultCategory);
-
-        // spara användaren först så vi får ID
+        Available available = new Available(false, null, user);
+        user.setAvailableStatus(available);
 
         User savedUser = userRepository.save(user);
-
-        //skapa Available och koppla till sparade användaren
-
-        Available available = new Available(false, null, savedUser);
-        savedUser.setAvailableStatus(available);
 
 // spara först användaren
         savedUser = userRepository.save(savedUser);
@@ -115,7 +109,7 @@ public class UserController {
         User user = userRepository.findById(id).orElse(null);
         if (user == null) return ResponseEntity.notFound().build();
 
-        //
+        
         boolean available = availabilityData.get("available");
 
         // uppdatera availability och sätt timestamp om true, annars nollställ
