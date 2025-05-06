@@ -57,17 +57,17 @@ public class UserController {
 
     @PostMapping("/register")
     public ResponseEntity<User> registerUser(@RequestBody User user) {
+        // Bara användare med @student.su.se kan registrera
+        if (!user.getEmail().toLowerCase().endsWith("@student.su.se")) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(null); // or return a custom error message if needed
+        }
         if (userRepository.findByEmail(user.getEmail()) != null) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build(); // Användare finns redan
         }
+        userRepository.setUserCategory(user.getId(),categoryRepository.findByName("Standard Category"));
 
-        //kolla eller skapa standardkategori
-
-        Category defaultCategory = categoryRepository.findByName("Standard Category");
-        if (defaultCategory == null) {
-            defaultCategory = new Category("Standard Category");
-            categoryRepository.save(defaultCategory);
-        }
         Available available = new Available(false, null, user);
         user.setAvailableStatus(available);
 
