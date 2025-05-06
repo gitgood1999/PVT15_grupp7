@@ -6,6 +6,7 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,6 +36,9 @@ public class UserController {
     @Autowired
     private NotificationService notificationService;
     // hämta alla användare
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @GetMapping
     public List<User> getAllUsers() {
@@ -67,6 +71,9 @@ public class UserController {
         Available available = new Available(false, null, user);
         user.setAvailableStatus(available);
 
+        String hashedPassword = passwordEncoder.encode(user.getPassword());
+        user.setPassword(hashedPassword);
+
         User savedUser = userRepository.save(user);
 
 // spara först användaren
@@ -87,7 +94,7 @@ public class UserController {
     public ResponseEntity<Object> loginUser(@RequestBody User loginData) {
         User user = userRepository.findByEmail(loginData.getEmail());
 
-        if (user == null || !user.getPassword().equals(loginData.getPassword())) {
+        if (user == null || !authenticate(loginData.getPassword(), user.getPassword())) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(Map.of("message", "Felaktig e-post eller lösenord"));
         }
@@ -101,6 +108,11 @@ public class UserController {
                 // man kan lägga till mer om dman behöver, tex categoryId eller availableStatus
         ));
     }
+
+    public boolean authenticate(String rawPassword, String hashedPassword) {
+        return passwordEncoder.matches(rawPassword, hashedPassword);
+    }
+
 
 
     @PutMapping("/{id}/toggleAvailability")
@@ -199,9 +211,7 @@ public class UserController {
 
 
         //TEST FUNKTION FÖR WEBSOCKET
-        notificationService.sendDatabaseChangeNotification(
-                "User " + user.getId() + " updated avatar to index " + avatarIndex
-        );
+        notificationService.sendDatabaseChangeNotification("User " + user.getId() + " updated avatar to index " + avatarIndex, user.getEmail());
 
 
         return ResponseEntity.ok().build();
