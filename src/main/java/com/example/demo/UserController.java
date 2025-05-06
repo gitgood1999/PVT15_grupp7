@@ -32,6 +32,8 @@ public class UserController {
     @Autowired
     private MatchService matchService;
 
+    @Autowired
+    private NotificationService notificationService;
     // hämta alla användare
 
     @GetMapping
@@ -200,7 +202,16 @@ public class UserController {
 
         user.setAvatarIndex(avatarIndex);
         userRepository.save(user);
+
+
+        //TEST FUNKTION FÖR WEBSOCKET
+        notificationService.sendDatabaseChangeNotification(
+                "User " + user.getId() + " updated avatar to index " + avatarIndex
+        );
+
+
         return ResponseEntity.ok().build();
+
     }
 
 
