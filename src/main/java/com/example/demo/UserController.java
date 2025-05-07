@@ -58,12 +58,6 @@ public class UserController {
 
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody User user) {
-        // ✅ Email domain check
-        if (!user.getEmail().toLowerCase().endsWith("@student.su.se")) {
-            return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body(new ErrorResponse("User email not valid, only SU students can register"));
-        }
 
         // ✅ Check if user already exists
         if (userRepository.findByEmail(user.getEmail()) != null) {
