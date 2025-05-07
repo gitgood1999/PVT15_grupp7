@@ -16,7 +16,7 @@ public class UserMatch {
     @ManyToOne
     private User user2;
 
-    @OneToOne(mappedBy = "match", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "match", cascade = CascadeType.ALL,orphanRemoval = true)
     private Chat chat;
 
     public void setUser1(User user1) {

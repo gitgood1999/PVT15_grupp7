@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -83,5 +84,16 @@ public class MatchService {
         }
         return null;
     }
+
+    @Transactional
+    public boolean deleteMatch(Long matchId) {
+        Optional<UserMatch> optionalMatch = matchRepository.findById(matchId);
+        if (optionalMatch.isPresent()) {
+            matchRepository.delete(optionalMatch.get());
+            return true;
+        }
+        return false;
+    }
+
 }
 
