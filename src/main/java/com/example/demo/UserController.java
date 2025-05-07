@@ -66,7 +66,7 @@ public class UserController {
                     .body(new ErrorResponse("User already exists"));
         }
 
-        userRepository.setUserCategory(user.getId(), categoryRepository.findByName("Standard Category"));
+        userRepository.setUserCategory(user.getId(), null);
 
         Available available = new Available(false, null, user);
         user.setAvailableStatus(available);
@@ -172,7 +172,7 @@ public class UserController {
     //hjälpmetod till findUserMatch
     private List<User> findUserMatchList(User user){
         if(userRepository.findByEmail(user.getEmail())!=null){
-            if(user.getCategory().getName().equals("Whatever")){
+            if(user.getCategory().getName().equals("Spontaneous fun")){
                 return userRepository.findAllExcludingUser(user.getId());
             }else{
                 return userRepository.findByCategoryOrWhateverAndAvailableTrueExcludingUser(user.getCategory().getName(),user.getId(), user.getPreviousMatches());
