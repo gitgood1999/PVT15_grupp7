@@ -36,7 +36,7 @@ public class DataSeeder implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-
+       // seedCategories();
 //        System.out.println(userController.authenticate("lösen",userRepository.findByEmail("hober@student.su.se").getPassword()));
 //        User user = new User();
 //        user.setName("Daniel");
@@ -131,10 +131,10 @@ public class DataSeeder implements CommandLineRunner {
     private void seedCategories() {
         categoryRepository.deleteAll();
         if (categoryRepository.findAll().isEmpty()) {
-            categoryRepository.save(new Category("Study"));
-            categoryRepository.save(new Category("Eat"));
-            categoryRepository.save(new Category("Train"));
-            categoryRepository.save(new Category("Whatever"));
+            categoryRepository.save(new Category("Grab A Fika"));
+            categoryRepository.save(new Category("Study session"));
+            categoryRepository.save(new Category("Go for a walk"));
+            categoryRepository.save(new Category("Spontaneous fun"));
             System.out.println("Default categories inserted.");
         }
     }

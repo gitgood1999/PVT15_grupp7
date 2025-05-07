@@ -7,6 +7,7 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,6 +24,9 @@ public class UserController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
     private CategoryRepository categoryRepository;
@@ -53,32 +57,29 @@ public class UserController {
     //registrering av användare för första gången
 
     @PostMapping("/register")
-    public ResponseEntity<User> registerUser(@RequestBody User user) {
+    public ResponseEntity<?> registerUser(@RequestBody User user) {
+
+        // ✅ Check if user already exists
         if (userRepository.findByEmail(user.getEmail()) != null) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).build(); // Användare finns redan
+            return ResponseEntity
+                    .status(HttpStatus.CONFLICT)
+                    .body(new ErrorResponse("User already exists"));
         }
 
-        //kolla eller skapa standardkategori
+        userRepository.setUserCategory(user.getId(), null);
 
-        Category defaultCategory = categoryRepository.findByName("Standard Category");
-        if (defaultCategory == null) {
-            defaultCategory = new Category("Standard Category");
-            categoryRepository.save(defaultCategory);
-        }
         Available available = new Available(false, null, user);
         user.setAvailableStatus(available);
 
+        String hashedPassword = passwordEncoder.encode(user.getPassword());
+        user.setPassword(hashedPassword);
+
         User savedUser = userRepository.save(user);
-
-// spara först användaren
-        savedUser = userRepository.save(savedUser);
-
-// sen spara available separat också, för säkerhets skull
         availabilityService.save(available);
 
         return ResponseEntity.ok(savedUser);
-
     }
+
 
 
 
@@ -88,7 +89,7 @@ public class UserController {
     public ResponseEntity<Object> loginUser(@RequestBody User loginData) {
         User user = userRepository.findByEmail(loginData.getEmail());
 
-        if (user == null || !user.getPassword().equals(loginData.getPassword())) {
+        if (user == null || !authenticate(loginData.getPassword(), user.getPassword())) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(Map.of("message", "Felaktig e-post eller lösenord"));
         }
@@ -101,6 +102,9 @@ public class UserController {
                 "avatarIndex", user.getAvatarIndex()
                 // man kan lägga till mer om dman behöver, tex categoryId eller availableStatus
         ));
+    }
+    public boolean authenticate(String rawPassword, String hashedPassword) {
+        return passwordEncoder.matches(rawPassword, hashedPassword);
     }
 
 
@@ -168,7 +172,7 @@ public class UserController {
     //hjälpmetod till findUserMatch
     private List<User> findUserMatchList(User user){
         if(userRepository.findByEmail(user.getEmail())!=null){
-            if(user.getCategory().getName().equals("Whatever")){
+            if(user.getCategory().getName().equals("Spontaneous fun")){
                 return userRepository.findAllExcludingUser(user.getId());
             }else{
                 return userRepository.findByCategoryOrWhateverAndAvailableTrueExcludingUser(user.getCategory().getName(),user.getId(), user.getPreviousMatches());
@@ -231,7 +235,7 @@ public class UserController {
 
 
         //TEST FUNKTION FÖR WEBSOCKET
-        //notificationService.sendDatabaseChangeNotification("User " + user.getId() + " updated avatar to index " + avatarIndex);
+        notificationService.sendDatabaseChangeNotification("User " + user.getId() + " updated avatar to index " + avatarIndex, user.getEmail());
 
 
         return ResponseEntity.ok().build();
