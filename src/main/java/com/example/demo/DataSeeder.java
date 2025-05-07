@@ -131,7 +131,7 @@ public class DataSeeder implements CommandLineRunner {
     private void seedCategories() {
         categoryRepository.deleteAll();
         if (categoryRepository.findAll().isEmpty()) {
-            categoryRepository.save(new Category("Study"));
+            categoryRepository.save(new Category("Grab A Fika"));
             categoryRepository.save(new Category("Eat"));
             categoryRepository.save(new Category("Train"));
             categoryRepository.save(new Category("Whatever"));
