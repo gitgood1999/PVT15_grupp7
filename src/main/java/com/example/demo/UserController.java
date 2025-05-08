@@ -62,27 +62,24 @@ public class UserController {
 
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody User user) {
-
-        // ✅ Check if user already exists
         if (userRepository.findByEmail(user.getEmail()) != null) {
             return ResponseEntity
                     .status(HttpStatus.CONFLICT)
                     .body(new ErrorResponse("User already exists"));
         }
 
-        userRepository.setUserCategory(user.getId(), null);
+        String hashedPassword = passwordEncoder.encode(user.getPassword());
+        user.setPassword(hashedPassword);
 
         Available available = new Available(false, null, user);
         user.setAvailableStatus(available);
-
-        String hashedPassword = passwordEncoder.encode(user.getPassword());
-        user.setPassword(hashedPassword);
 
         User savedUser = userRepository.save(user);
         availabilityService.save(available);
 
         return ResponseEntity.ok(savedUser);
     }
+
 
 
 
@@ -114,21 +111,16 @@ public class UserController {
 
     @PutMapping("/{id}/toggleAvailability")
     public ResponseEntity<Void> updateAvailability(@PathVariable Long id, @RequestBody Map<String, Object> availabilityData) {
-        // hämta användaren från databasen
-        User user = userRepository.findById(id).orElse(null);
-        if (user == null) return ResponseEntity.notFound().build();
+        Optional<User> optionalUser = userRepository.findById(id);
+        if (optionalUser.isEmpty()) return ResponseEntity.notFound().build();
 
-        // plockar ut värden från JSON-requesten
+        User user = optionalUser.get();
+
         boolean available = (Boolean) availabilityData.get("available");
-        Integer totalMinutes = availabilityData.containsKey("totalMinutes")
-                ? (Integer) availabilityData.get("totalMinutes")
-                : null;
+        Integer totalMinutes = availabilityData.containsKey("totalMinutes") ? (Integer) availabilityData.get("totalMinutes") : null;
+        Integer activityId = availabilityData.containsKey("activityId") ? (Integer) availabilityData.get("activityId") : null;
 
-        Integer activityId = availabilityData.containsKey("activityId")
-                ? (Integer) availabilityData.get("activityId")
-                : null;
-
-        // hämtar eller skapar Available-objektet
+        // Hämta eller skapa Available
         Available status = user.getAvailableStatus();
         if (status == null) {
             status = new Available();
@@ -136,7 +128,6 @@ public class UserController {
         }
 
         status.setAvailable(available);
-
         if (available) {
             LocalDateTime now = LocalDateTime.now();
             status.setAvailableSince(now);
@@ -146,18 +137,21 @@ public class UserController {
             status.setAvailableUntil(null);
         }
 
-        // om användaren har valt en kategori, koppla den till user
+        user.setAvailableStatus(status);
+
+        // Hämta och sätt kategori om skickad
         if (activityId != null) {
-            Category category = categoryRepository.findById(activityId.longValue());
-            user.setCategory(category); // här sätter vi aktiviteten direkt på användaren
+            categoryRepository.findById(activityId.longValue())
+                    .ifPresent(user::setCategory);
         }
 
-        // spara ändringar
-        user.setAvailableStatus(status);
+        // Spara båda om du vill vara helt säker
+        availabilityService.save(status); // om du använder separat save för Available
         userRepository.save(user);
 
         return ResponseEntity.ok().build();
     }
+
 
 
 
@@ -176,7 +170,7 @@ public class UserController {
     //hjälpmetod till findUserMatch
     private List<User> findUserMatchList(User user){
         if(userRepository.findByEmail(user.getEmail())!=null){
-            if(user.getCategory().getName().equals("Spontaneous fun")){
+            if(user.getCategory().getName().equals("Whatever")){
                 return userRepository.findAllExcludingUser(user.getId());
             }else{
                 return userRepository.findByCategoryOrWhateverAndAvailableTrueExcludingUser(user.getCategory().getName(),user.getId(), user.getPreviousMatches());
