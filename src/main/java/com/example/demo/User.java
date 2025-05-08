@@ -48,6 +48,7 @@ public class User {
         return previousMatches;
     }
 
+    private String fcmToken;
 
     public Integer getAvatarIndex() {
         return avatarIndex;
@@ -100,6 +101,14 @@ public class User {
 
     public void setAvailableStatus(Available availableStatus) {
         this.availableStatus = availableStatus;
+    }
+
+    public String getFcmToken() {
+        return fcmToken;
+    }
+
+    public void setFcmToken(String fcmToken) {
+        this.fcmToken = fcmToken;
     }
 
     @Override
