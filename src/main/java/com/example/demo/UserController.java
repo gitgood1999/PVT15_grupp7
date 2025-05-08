@@ -3,6 +3,7 @@ import java.util.Optional;
 
 import com.example.demo.User;
 import com.example.demo.UserRepository;
+import com.google.firebase.messaging.FirebaseMessagingException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,6 +25,9 @@ public class UserController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private FCMService fcmService;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -220,6 +224,19 @@ public class UserController {
         userRepository.saveAll(allUsers);
     }
 
+    @PutMapping("/{id}/fcm-token")
+    public ResponseEntity<?> updateFcmToken(@PathVariable Long id, @RequestBody Map<String, String> body) {
+        String token = body.get("token");
+
+        User user = userRepository.findById(id).orElse(null);
+        if (user == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        user.setFcmToken(token);
+        userRepository.save(user);
+        return ResponseEntity.ok().build();
+    }
 
     //metod för att uppdatera avatar via settings
     @PutMapping("/updateAvatar")
@@ -233,6 +250,17 @@ public class UserController {
         user.setAvatarIndex(avatarIndex);
         userRepository.save(user);
 
+        try {
+            if (user.getFcmToken() != null) {
+                fcmService.sendMessage(
+                        user.getFcmToken(),
+                        "Avatar updated",
+                        "Your profile avatar was successfully updated."
+                );
+            }
+        } catch (FirebaseMessagingException e) {
+            e.printStackTrace(); // Optionally handle error better
+        }
 
         //TEST FUNKTION FÖR WEBSOCKET
         notificationService.sendDatabaseChangeNotification("User " + user.getId() + " updated avatar to index " + avatarIndex, user.getEmail());
