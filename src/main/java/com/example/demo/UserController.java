@@ -77,7 +77,9 @@ public class UserController {
         User savedUser = userRepository.save(user);
         availabilityService.save(available);
 
-        return ResponseEntity.ok(savedUser);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(savedUser);
     }
 
 

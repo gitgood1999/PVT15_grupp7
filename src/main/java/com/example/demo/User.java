@@ -58,6 +58,9 @@ public class User {
         this.avatarIndex = avatarIndex;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public long getId() {
         return id;

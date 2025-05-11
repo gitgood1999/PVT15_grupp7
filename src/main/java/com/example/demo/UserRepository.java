@@ -13,7 +13,11 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Long> {
    User findByEmail(String email);
 
+   User findByName(String name);
+
    User findById(long id);
+
+   void deleteByEmail(String email);
 
    @Query("""
     SELECT u FROM User u
