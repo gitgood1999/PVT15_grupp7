@@ -172,10 +172,10 @@ public class UserController {
     //hjälpmetod till findUserMatch
     private List<User> findUserMatchList(User user){
         if(userRepository.findByEmail(user.getEmail())!=null){
-            if(user.getCategory().getName().equals("Whatever")){
+            if(user.getCategory().getName().equals("Spontaneous fun")){
                 return userRepository.findAllExcludingUser(user.getId());
             }else{
-                return userRepository.findByCategoryOrWhateverAndAvailableTrueExcludingUser(user.getCategory().getName(),user.getId(), user.getPreviousMatches());
+                return userRepository.findByCategoryOrSpontaneousAndAvailableTrueExcludingUser(user.getCategory().getName(),user.getId(), user.getPreviousMatches());
             }
         }else{
             return null;

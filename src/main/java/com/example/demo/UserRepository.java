@@ -22,12 +22,12 @@ public interface UserRepository extends JpaRepository<User, Long> {
    @Query("""
     SELECT u FROM User u
     JOIN Available a ON a.user = u
-    WHERE (u.category.name = :categoryName OR u.category.name = 'Whatever')
+    WHERE (u.category.name = :categoryName OR u.category.name = 'Spontaneous fun')
     AND a.available = true
     AND u.id != :userId
     AND u NOT IN :previousMatches
 """)
-   List<User> findByCategoryOrWhateverAndAvailableTrueExcludingUser(
+   List<User> findByCategoryOrSpontaneousAndAvailableTrueExcludingUser(
            @Param("categoryName") String categoryName,
            @Param("userId") Long userId,
            @Param("previousMatches") List<User> previousMatches
