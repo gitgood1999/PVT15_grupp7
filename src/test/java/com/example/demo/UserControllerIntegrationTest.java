@@ -65,7 +65,6 @@ public class UserControllerIntegrationTest {
 
     @Test
     public void testRegisterUserInvalidEmail() {
-        // Given
         User user = new User();
         user.setName("IntegrationTestName");
         user.setEmail("IntegrationTestEmail@gmail.com");
@@ -73,12 +72,7 @@ public class UserControllerIntegrationTest {
 
         ResponseEntity<?> response = userController.registerUser(user);
 
-        assertEquals("Expected status code to be CREATED (201) after successful user registration",HttpStatus.CREATED, response.getStatusCode());
-
-        User registeredUser = userRepository.findByName("IntegrationTestName");
-
-        assertNotNull(registeredUser);
-        assertEquals("User email in database not correct","IntegrationTestEmail@student.su.se", registeredUser.getEmail());
+        assertEquals("Expected status code to be BAD_REQUEST after failed user registration",HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
 
 
