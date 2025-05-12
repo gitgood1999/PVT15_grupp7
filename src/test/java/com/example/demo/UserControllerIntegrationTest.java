@@ -16,8 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.util.AssertionErrors.assertEquals;
 
 @SpringBootTest
@@ -98,7 +97,7 @@ public class UserControllerIntegrationTest {
     }
 
     @Test
-    public void testCreateMatch() {
+    public void testCreateMatchAndChat() {
         // Given
         User user1 = new User();
         user1.setName("IntegrationTestName");
@@ -193,6 +192,45 @@ public class UserControllerIntegrationTest {
         List<Message> messages = messageController.getMessagesByChat(chat.getId());
         assertEquals("expected amount of messages to be 2",2, messages.size());
     }
+
+    @Test
+    public void testNotFindingMatchWrongCategory(){
+        User user1 = new User();
+        user1.setName("IntegrationTestName");
+        user1.setEmail("IntegrationTestEmail@student.su.se");
+        user1.setPassword("IntegrationTestPassword");
+        userController.registerUser(user1);
+
+        User user2 = new User();
+        user2.setName("IntegrationTestName2");
+        user2.setEmail("IntegrationTestEmail2@student.su.se");
+        user2.setPassword("IntegrationTestPassword2");
+        userController.registerUser(user2);
+
+        User savedUser1 = userRepository.findByName("IntegrationTestName");
+        User savedUser2 = userRepository.findByName("IntegrationTestName2");
+
+        Category category = categoryRepository.findByName("Go for a walk");
+        Category category2 = categoryRepository.findByName("Grab A Fika");
+
+        Map<String, Object> availabilityData = new HashMap<>();
+        availabilityData.put("available", true);
+        availabilityData.put("totalMinutes", 30);
+        availabilityData.put("activityId", category.getId().intValue());
+
+
+        Map<String, Object> availabilityData2 = new HashMap<>();
+        availabilityData2.put("available", true);
+        availabilityData2.put("totalMinutes", 30);
+        availabilityData2.put("activityId", category2.getId().intValue());
+
+        userController.updateAvailability(savedUser1.getId(), availabilityData);
+        userController.updateAvailability(savedUser2.getId(), availabilityData2);
+
+        boolean isMatch = userController.matchUser(savedUser1);
+        assertFalse(isMatch, "User should not be matching");
+    }
+
 }
 
 
