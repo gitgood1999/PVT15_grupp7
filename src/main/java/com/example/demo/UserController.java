@@ -62,6 +62,13 @@ public class UserController {
 
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody User user) {
+        String email = user.getEmail();
+        if (!email.matches("^[\\w.-]+@student\\.su\\.se$")) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(new ErrorResponse("Email must be a valid student.su.se address"));
+        }
+
         if (userRepository.findByEmail(user.getEmail()) != null) {
             return ResponseEntity
                     .status(HttpStatus.CONFLICT)
