@@ -95,5 +95,9 @@ public class MatchService {
         return false;
     }
 
+    public MatchRepository getMatchRepository() {
+        return matchRepository;
+    }
+
 }
 
