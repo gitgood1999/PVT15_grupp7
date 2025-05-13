@@ -197,9 +197,11 @@ public class UserController {
         }
         return matchList.stream()
                 .filter(u -> u.getAvailableStatus() != null && u.getAvailableStatus().getAvailableSince() != null)
+                .filter(u -> !user.getPreviousMatches().contains(u)) // Exclude already matched users
                 .min(Comparator.comparing(u -> u.getAvailableStatus().getAvailableSince()))
                 .orElse(null);
     }
+
     @PostMapping
     public boolean matchUser(User user) {
         User user2 = findUserMatch(user);

@@ -53,7 +53,9 @@ public class MatchService {
 
         userRepository.save(user1);
         userRepository.save(user2);
+        userRepository.flush();
 
+        // Toggle availability (if necessary)
         availabilityService.toggleAvailability(user1.getId());
         availabilityService.toggleAvailability(user2.getId());
 
@@ -62,6 +64,7 @@ public class MatchService {
         return matchRepository.save(match);
     }
 
+
     private void matchNotification(User user1, User user2) {
         notificationService.sendDatabaseChangeNotification("You have a new match!", user1.getEmail());
         notificationService.sendDatabaseChangeNotification("You have a new match!", user2.getEmail());
@@ -69,14 +72,28 @@ public class MatchService {
 
 
     private void addToPreviousMatches(User source, User target) {
-        List<User> prev = source.getPreviousMatches();
-        if (!prev.contains(target)) {
-            if (prev.size() >= 5) {
-                prev.remove(0);
+        List<User> sourcePrev = source.getPreviousMatches();
+        List<User> targetPrev = target.getPreviousMatches();
+
+        if (!sourcePrev.contains(target)) {
+            if (sourcePrev.size() >= 5) {
+                sourcePrev.remove(0);
             }
-            prev.add(target);
+            sourcePrev.add(target);
         }
+
+        if (!targetPrev.contains(source)) {
+            if (targetPrev.size() >= 5) {
+                targetPrev.remove(0);
+            }
+            targetPrev.add(source);
+        }
+
+        // Save both users
+        userRepository.save(source);
+        userRepository.save(target);
     }
+
 
     public UserMatch getMatch(long id) {
         if (matchRepository.existsById(id)) {

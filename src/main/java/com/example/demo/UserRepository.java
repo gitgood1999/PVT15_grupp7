@@ -21,7 +21,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
    @Query("""
     SELECT u FROM User u
-    JOIN Available a ON a.user = u
+    JOIN u.availableStatus a
     WHERE (u.category.name = :categoryName OR u.category.name = 'Spontaneous fun')
     AND a.available = true
     AND u.id != :userId
@@ -32,6 +32,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
            @Param("userId") Long userId,
            @Param("previousMatches") List<User> previousMatches
    );
+
+
 
 
    @Transactional
@@ -49,6 +51,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
    @EntityGraph(attributePaths = "previousMatches")
    @Query("SELECT u FROM User u WHERE u.id = :id")
    Optional<User> findWithPreviousMatchesById(@Param("id") Long id);
+
 
 
 
