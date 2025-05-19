@@ -3,14 +3,19 @@ import java.util.Optional;
 
 import com.example.demo.User;
 import com.example.demo.UserRepository;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
+
 
 
 import java.time.LocalDateTime;
@@ -18,6 +23,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
+
 
 @RestController
 @RequestMapping("api/users")
@@ -41,9 +48,8 @@ public class UserController {
     @Autowired
     private MatchService matchService;
 
-    @Autowired
-    private NotificationService notificationService;
-    // hämta alla användare
+
+
 
     @GetMapping
     public List<User> getAllUsers() {
@@ -61,32 +67,48 @@ public class UserController {
     //registrering av användare för första gången
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@RequestBody User user) {
+    public ResponseEntity<Object> registerUser(@RequestBody User user) {
         String email = user.getEmail();
         if (!email.matches("^[\\w.-]+@student\\.su\\.se$")) {
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
                     .body(new ErrorResponse("Email must be a valid student.su.se address"));
         }
-
-        if (userRepository.findByEmail(user.getEmail()) != null) {
+        if (userRepository.findByEmail(email) != null) {
             return ResponseEntity
                     .status(HttpStatus.CONFLICT)
                     .body(new ErrorResponse("User already exists"));
         }
 
+        // Hasha lösenord och spara user i databasen
         String hashedPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(hashedPassword);
-
         Available available = new Available(false, null, user);
         user.setAvailableStatus(available);
-
         User savedUser = userRepository.save(user);
         availabilityService.save(available);
 
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(savedUser);
+        try {
+            // Skapa custom token för den nyregistrerade användaren
+            // Före:
+
+           String firebaseToken = FirebaseAuth.getInstance()
+                   .createCustomToken(String.valueOf(savedUser.getId()));
+
+
+            // Returnera user + token
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body(Map.of(
+                            "id", savedUser.getId(),
+                            "name", savedUser.getName(),
+                            "email", savedUser.getEmail(),
+                            "avatarIndex", savedUser.getAvatarIndex(),
+                            "firebaseToken", firebaseToken
+                    ));
+        } catch (FirebaseAuthException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("message", "Could not create Firebase token"));
+        }
     }
 
 
@@ -94,72 +116,108 @@ public class UserController {
 
 
 
-    //metoden för att logga in
+
     @PostMapping("/login")
     public ResponseEntity<Object> loginUser(@RequestBody User loginData) {
         User user = userRepository.findByEmail(loginData.getEmail());
-
         if (user == null || !authenticate(loginData.getPassword(), user.getPassword())) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(Map.of("message", "Felaktig e-post eller lösenord"));
         }
 
-        // returnera det man vill använda i Flutter
-        return ResponseEntity.ok(Map.of(
-                "id", user.getId(),
-                "name", user.getName(),
-                "email", user.getEmail(),
-                "avatarIndex", user.getAvatarIndex()
-                // man kan lägga till mer om dman behöver, tex categoryId eller availableStatus
-        ));
+        try {
+            // Skapa custom token baserat på din interna user.id (omvandla till sträng)
+            String firebaseToken = FirebaseAuth.getInstance()
+                    .createCustomToken(String.valueOf(user.getId()));
+
+            // Returnera token tillsammans med dina övriga fält
+            return ResponseEntity.ok(Map.of(
+                    "id", user.getId(),
+                    "name", user.getName(),
+                    "email", user.getEmail(),
+                    "avatarIndex", user.getAvatarIndex(),
+                    "firebaseToken", firebaseToken
+            ));
+        } catch (FirebaseAuthException e) {
+            // Hantera fel vid token-skapande
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("message", "Could not create Firebase token"));
+        }
     }
-    public boolean authenticate(String rawPassword, String hashedPassword) {
-        return passwordEncoder.matches(rawPassword, hashedPassword);
-    }
+
+
 
 
     @PutMapping("/{id}/toggleAvailability")
-    public ResponseEntity<Void> updateAvailability(@PathVariable Long id, @RequestBody Map<String, Object> availabilityData) {
-        Optional<User> optionalUser = userRepository.findById(id);
-        if (optionalUser.isEmpty()) return ResponseEntity.notFound().build();
+    public ResponseEntity<Void> updateAvailability(
+            @PathVariable Long id,
+            @RequestBody Map<String, Object> availabilityData
+    ) {
+        System.out.println(">>> Received availability update for userId=" + id + ": " + availabilityData);
 
-        User user = optionalUser.get();
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
-        boolean available = (Boolean) availabilityData.get("available");
-        Integer totalMinutes = availabilityData.containsKey("totalMinutes") ? (Integer) availabilityData.get("totalMinutes") : null;
-        Integer activityId = availabilityData.containsKey("activityId") ? (Integer) availabilityData.get("activityId") : null;
+        // Hämta eller skapa ett Available‐objekt
+        Available status = Optional.ofNullable(user.getAvailableStatus())
+                .orElseGet(() -> {
+                    Available a = new Available();
+                    a.setUser(user);
+                    return a;
+                });
 
-        // Hämta eller skapa Available
-        Available status = user.getAvailableStatus();
-        if (status == null) {
-            status = new Available();
-            status.setUser(user);
-        }
+        // Robust tolkning av "available"
+        Object availableObj = availabilityData.get("available");
+        boolean available = (availableObj instanceof Boolean)
+                ? (Boolean) availableObj
+                : Boolean.parseBoolean(String.valueOf(availableObj));
+
+        Integer totalMinutes = (Integer) availabilityData.getOrDefault("totalMinutes", null);
 
         status.setAvailable(available);
+
         if (available) {
-            LocalDateTime now = LocalDateTime.now();
-            status.setAvailableSince(now);
-            status.setAvailableUntil(totalMinutes != null ? now.plusMinutes(totalMinutes) : null);
+            LocalDateTime start;
+            if (availabilityData.containsKey("from")) {
+                start = LocalDateTime.parse((String) availabilityData.get("from"));
+            } else {
+                start = LocalDateTime.now();
+            }
+            status.setAvailableSince(start);
+            status.setAvailableUntil(totalMinutes != null ? start.plusMinutes(totalMinutes) : null);
         } else {
             status.setAvailableSince(null);
             status.setAvailableUntil(null);
         }
 
         user.setAvailableStatus(status);
+        availabilityService.save(status);
 
-        // Hämta och sätt kategori om skickad
-        if (activityId != null) {
-            categoryRepository.findById(activityId.longValue())
-                    .ifPresent(user::setCategory);
+
+        // Kategori (activityId)
+        if (availabilityData.containsKey("activityId")) {
+            Integer activityId = (Integer) availabilityData.get("activityId");
+            if (activityId != null) {
+                Category category = categoryRepository.findById(Long.valueOf(activityId))
+                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Category not found"));
+                user.setCategory(category);
+            }
         }
 
-        // Spara båda om du vill vara helt säker
-        availabilityService.save(status); // om du använder separat save för Available
         userRepository.save(user);
+
+        // Matchningslogik
+        if (available) {
+            matchService.findAvailableMatchForUser(id)
+                    .ifPresent(partner -> matchService.createMatch(user, partner));
+        }
 
         return ResponseEntity.ok().build();
     }
+
+
+
+
 
 
 
@@ -197,11 +255,9 @@ public class UserController {
         }
         return matchList.stream()
                 .filter(u -> u.getAvailableStatus() != null && u.getAvailableStatus().getAvailableSince() != null)
-                .filter(u -> !user.getPreviousMatches().contains(u)) // Exclude already matched users
                 .min(Comparator.comparing(u -> u.getAvailableStatus().getAvailableSince()))
                 .orElse(null);
     }
-
     @PostMapping
     public boolean matchUser(User user) {
         User user2 = findUserMatch(user);
@@ -267,8 +323,7 @@ public class UserController {
             e.printStackTrace(); // Optionally handle error better
         }
 
-        //TEST FUNKTION FÖR WEBSOCKET
-        notificationService.sendDatabaseChangeNotification("User " + user.getId() + " updated avatar to index " + avatarIndex, user.getEmail());
+
 
 
         return ResponseEntity.ok().build();
@@ -296,6 +351,28 @@ public class UserController {
 
 
 
+    @GetMapping("/{id}/match")
+    public ResponseEntity<MatchResponse> findUserMatchById(@PathVariable Long id) {
+        return matchService.findAvailableMatchForUser(id)
+                .map(partner -> {
+
+                    MatchResponse resp = new MatchResponse(
+                            partner.getId(),
+                            partner.getName(),
+                            partner.getAvatarIndex()
+                    );
+                    return ResponseEntity.ok(resp);
+                })
+                .orElseGet(() -> ResponseEntity.noContent().build());
+    }
+
+
+
+
+
+    private boolean authenticate(String rawPassword, String hashedPassword) {
+        return passwordEncoder.matches(rawPassword, hashedPassword);
+    }
 
 
 

@@ -1,7 +1,6 @@
 package com.example.demo;
 
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 
 @Service
@@ -13,11 +12,12 @@ public class MessageService {
         this.messageRepository = messageRepository;
     }
 
-    public MessageRepository getMessageRepository() {
-        return messageRepository;
+    /** Hämtar hela tråden i rätt ordning */
+    public List<Message> getMessagesByChatId(Long chatId) {
+        return messageRepository.findByChat_IdOrderByTimestampAsc(chatId);
     }
 
-    public List<Message> getMessagesByChatId(long chatId){
-        return messageRepository.findByChatId(chatId);
+    public MessageRepository getMessageRepository() {
+        return messageRepository;
     }
 }
