@@ -18,11 +18,7 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/users/register", "/api/users/login").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/users/*").permitAll() // 👈 tillåt GET user
-                        .requestMatchers("/websocket/**").permitAll() // 👈 tillåt WebSocket
-                        .requestMatchers(HttpMethod.PUT, "/api/users/**").permitAll()
-                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()    // ← tillåt verkligen allt
                 );
         return http.build();
     }
