@@ -74,6 +74,11 @@ public class UserController {
                     .status(HttpStatus.BAD_REQUEST)
                     .body(new ErrorResponse("Email must be a valid student.su.se address"));
         }
+        if(user.getPassword().length() < 8) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(new ErrorResponse("Password must be at least 8 characters"));
+        }
         if (userRepository.findByEmail(email) != null) {
             return ResponseEntity
                     .status(HttpStatus.CONFLICT)
