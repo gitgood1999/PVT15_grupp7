@@ -48,14 +48,16 @@ public class MatchController {
             return ResponseEntity.noContent().build();
         }
 
-        UserMatch  m           = opt.get();
-        User       partner     = (m.getUser1().getId()==(userId))
+        UserMatch  m       = opt.get();
+        User       partner = (m.getUser1().getId()==(userId))
                 ? m.getUser2()
                 : m.getUser1();
+
         Map<String,Object> body = new HashMap<>();
         body.put("name",        partner.getName());
         body.put("avatarIndex", partner.getAvatarIndex());
         body.put("matchId",     m.getId());
+        body.put("chatId",      m.getChat().getId());
 
         return ResponseEntity.ok(body);
     }
