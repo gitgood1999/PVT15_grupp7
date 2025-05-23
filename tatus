@@ -1,0 +1,114 @@
+* [33m9198f14[m[33m ([m[1;32mmain[m[33m)[m fixa WEBSOCKET
+* [33m8920544[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m Lade till ett lösenordskrav på minst 8 karaktärer,
+*   [33m423b7d2[m Merge pull request #1 from gitgood1999/Chat_matchpage_test
+[32m|[m[33m\[m  
+[32m|[m * [33m70ed3e6[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mChat_matchpage_test[m[33m, [m[1;31morigin/Chat_matchpage_test[m[33m)[m la till permission i SecurityConfig så att alla calls via api fungerar. har ändrat ltie i MatchController och UserController samt lagt till massa annat.alldeles för mycket för att det ska vara okej att pusha till main branch
+[32m|[m * [33meb2e67e[m la till permission i SecurityConfig så att alla calls via api fungerar. har ändrat ltie i MatchController och UserController samt lagt till massa annat.alldeles för mycket för att det ska vara okej att pusha till main branch
+[32m|[m[32m/[m  
+* [33mee8c672[m Småändringar och nytt test
+* [33m379e118[m Test att matcha med samma användare efter man matchas innan och efter match är borta
+* [33m5cab18c[m Test för att se att det inte går att signa upp utan su mail
+* [33m5629f6d[m Testar kolla student mail korrekt i backend
+* [33m1af61d8[m Ändrade matchUser till korrekta kategorinamn och lade till nytt test
+* [33mbdc9797[m Ett till test tillagt
+* [33ma25ceeb[m Skrivit ett Testprogram som testar flera saker: detaljer i beskrivning
+*   [33me509a1b[m Merge branch 'main' of https://github.com/gitgood1999/PVT15_grupp7
+[34m|[m[35m\[m  
+[34m|[m *   [33m53a74f0[m Merge branch 'main' of https://github.com/gitgood1999/PVT15_grupp7
+[34m|[m [36m|[m[1;31m\[m  
+[34m|[m * [1;31m|[m [33m408b230[m added FCM support
+* [1;31m|[m [1;31m|[m [33m53a376b[m tog bort fil som nt används
+[1;31m|[m [1;31m|[m[1;31m/[m  
+[1;31m|[m[1;31m/[m[1;31m|[m   
+* [1;31m|[m [33m5d238ee[m Merge remote-tracking branch 'origin/main'
+[1;32m|[m[1;31m\[m[1;31m|[m 
+[1;32m|[m * [33m48ce866[m added firebase support
+* [1;33m|[m [33mc54074f[m la till permission i SecurityConfig så att alla calls på user fungerar
+[1;33m|[m[1;33m/[m  
+* [33m1de38d8[m added a firebaseClass
+*   [33m06f7348[m Merge branch 'main' of https://github.com/gitgood1999/PVT15_grupp7
+[1;34m|[m[1;35m\[m  
+[1;34m|[m * [33m1702f12[m nya kategorier
+[1;34m|[m * [33m8228c3b[m la till i security config så att register fungerar
+[1;34m|[m * [33m2f910d3[m tar bort Su check
+[1;34m|[m * [33m12a1235[m Usercontroller kryptering och su mail
+* [1;35m|[m [33mc8000bb[m commiting private key
+[1;35m|[m[1;35m/[m  
+* [33m4dd32e4[m Update pom.xml
+* [33mb9fed03[m Ska gå att deleta matchning från frontend genom matchcontroller
+* [33mff06966[m Ändrade availableklassen så det även finns en available-until så man kan beräkna tid, la till så category skickas med i toggleavailability i usercontroller så man vet vilken category användaren skaka på
+*   [33m1b5655e[m Merge remote-tracking branch 'origin/main'
+[1;36m|[m[31m\[m  
+[1;36m|[m * [33m3e66674[m Bara "@student.su.se" kan registrera
+[1;36m|[m * [33m2893c24[m Kryptering och dekryptering fixad i login och registration
+* [31m|[m [33m5c88aae[m Ändrade availableklassen så det även finns en available-until så man kan beräkna tid, la till så category skickas med i toggleavailability i usercontroller så man vet vilken category användaren skaka på
+[31m|[m[31m/[m  
+* [33m541c9a9[m Notifikation till mottagare när meddelande skickas
+* [33m4fb8644[m match notifikation till båda användare när de matchats
+* [33m0750375[m ändra register user pyttelite så den faktiskt fungerade igen
+* [33mc62bd42[m ändra register user pyttelite så den faktiskt fungerade igen
+* [33mb2b00ff[m testa kryptera lösenord
+* [33m3cc2fdf[m added a websocket test
+* [33m4af14c2[m Added Websocket Support
+* [33mc5dc2f5[m ändrat pyttelite smågrejer för att få funktionen att fungera helt på flutter
+* [33m0a0add5[m Gjorde om toggleavailability så det fungerar att toggla på med skak samt av med knapptryck
+* [33m7f6162b[m Fixade updateavatar och updatename så man kan byta avatar och namn i settings och det uppdateras i databas
+* [33me301a07[m Message klass och FrontEnd funktion
+* [33me35df8c[m kommenterat ut testprogram
+*   [33m7eb1b16[m Merge branch 'main' of https://github.com/gitgood1999/PVT15_grupp7
+[32m|[m[33m\[m  
+[32m|[m * [33m981bb21[m Update pom.xml
+[32m|[m * [33mbf14a65[m added gitea address to pom file
+* [33m|[m [33m6534b35[m fixat  UserController och kollat MessageService/Repository
+[33m|[m[33m/[m  
+* [33m96bae22[m Kommenterade på MatchService
+* [33m6f16180[m Lade till MessageService och MessageController
+* [33mf1d43f4[m När man matchas togglar availablestatus av
+* [33mef8154d[m Lade till metod för att ta bort allas tidigare matchningar för testning
+* [33m103beb1[m Tidigare matchningar exkluderas från sökning
+* [33m6ee3791[m Går att spara Messages som blir timestampade och är kopplade till en chatt
+* [33m3669969[m Går att skapa en UserMatch för 2 användare
+* [33mce4a1df[m Message klass getters och toString
+*   [33m63b72c9[m Merge branch 'main' of https://github.com/gitgood1999/PVT15_grupp7
+[34m|[m[35m\[m  
+[34m|[m * [33mc5714fe[m Update pom.xml
+* [35m|[m [33m0afeb85[m Går att matcha två användare, fick döpa om match till userMatchj pga keyword
+[35m|[m[35m/[m  
+* [33mf0c21ba[m MatchService som hanterar matchningar
+* [33mb0ba8fd[m Skapat repositorys för de 3 nya klasserna
+* [33m0bc5cdf[m miniändringar
+* [33mb55cfa5[m 3 nya klasser: Match, Chat och Message
+* [33m7c3a9d1[m Lade till availabilityservice i Usercontroller samt en togglemetod
+* [33mc16927a[m Flyttat matchingsmetoden till UserController
+* [33m8d5199d[m Fixade till loginmetoden i usercontroller så den fungerar korrekt
+* [33m86c7575[m la till avatarid samt korrigera så att Available klassen verkligen hade samma primärnyckel id som user. Samt fixat i usercontroller så registrering fungerar korrekt
+* [33mffc782c[m findUserMatch fungerar
+* [33m8a16017[m fixat metod för att hämta matchningar
+* [33mc04088d[m Tog bort onödiga metoder, all userinteraction sker genom userController
+*   [33m7d48e7b[m Merge branch 'main' of https://github.com/gitgood1999/PVT15_grupp7
+[36m|[m[1;31m\[m  
+[36m|[m * [33mb517145[m La till en login-endpoint i UserController med kontroll för inloggning via flutter
+* [1;31m|[m [33m84c2bc0[m miniupdate, allt funkar
+[1;31m|[m[1;31m/[m  
+*   [33m62ca37d[m Merge branch 'main' of https://github.com/gitgood1999/PVT15_grupp7
+[1;32m|[m[1;33m\[m  
+[1;32m|[m * [33ma12f89a[m La till en registerUser-endpoint i UserController med kontroll för dubbletter
+* [1;33m|[m [33maa2c726[m metod findUserMatchList uppdaterad med ny tabell in mind
+[1;33m|[m[1;33m/[m  
+* [33mb293608[m Fungerar att toggla availability och timestamp. Går att aktivera och stänga av
+* [33mbc01c9b[m Available table with timestamp
+* [33mf2aab89[m Update TomcatPingService.java
+* [33ma690d31[m Changed tomcatPingService
+* [33m90fc3c4[m AddedTomcatPingService
+* [33m9386b43[m Småfix, formatering och borttag av onödiga metoder
+* [33m227585d[m Gjorde metoder i dataseeder som gör vanliga användbara metoder
+* [33m720dce5[m Category och CategoryRepository
+* [33me3e57c9[m Available funktion
+* [33m4855242[m isAvailable added
+* [33m1dec431[m lade till en boolean för tillgänglighet
+* [33m4f53f72[m la till en onödig kommentar
+* [33m4e725ab[m Update mvnw.cmd
+* [33m5e195f7[m Add files via upload
+* [33m010e4e4[m Changes by Linus
+* [33m8f6e2f6[m Fixat tomcat servern med dependencies
+* [33m0b42263[m Fixat tomcat servern med dependencies
