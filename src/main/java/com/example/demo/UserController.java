@@ -322,8 +322,8 @@ public class UserController {
         } catch (FirebaseMessagingException e) {
             e.printStackTrace(); // Optionally handle error better
         }
+    */
 
-        */
 
 
         return ResponseEntity.ok().build();

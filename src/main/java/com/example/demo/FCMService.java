@@ -53,4 +53,43 @@ public class FCMService {
         // 5) Skicka
         return FirebaseMessaging.getInstance().send(message);
     }
+
+
+    public String sendMessageWithMatchData(String token, String title, String body,
+                                           Long chatId, Long matchId,
+                                           String screen,
+                                           String matchedUserName, int matchedUserAvatarIndex) throws FirebaseMessagingException {
+        Notification notification = Notification.builder()
+                .setTitle(title)
+                .setBody(body)
+                .build();
+
+        AndroidConfig androidConfig = AndroidConfig.builder()
+                .setPriority(AndroidConfig.Priority.HIGH)
+                .setNotification(AndroidNotification.builder()
+                        .setSound("default")
+                        .build())
+                .build();
+
+        ApnsConfig apnsConfig = ApnsConfig.builder()
+                .setAps(Aps.builder()
+                        .setContentAvailable(true)
+                        .setSound("default")
+                        .build())
+                .build();
+
+        Message message = Message.builder()
+                .setToken(token)
+                .setNotification(notification)
+                .setAndroidConfig(androidConfig)
+                .setApnsConfig(apnsConfig)
+                .putData("screen", screen)
+                .putData("chatId", chatId.toString())
+                .putData("matchId", matchId.toString())
+                .putData("matchedUserName", matchedUserName)
+                .putData("matchedUserAvatarIndex", String.valueOf(matchedUserAvatarIndex))
+                .build();
+
+        return FirebaseMessaging.getInstance().send(message);
+    }
 }
