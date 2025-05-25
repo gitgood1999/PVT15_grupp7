@@ -49,17 +49,17 @@ public class MessageController {
 
 
     @PostMapping
-    public ResponseEntity<Message> createMessage(@RequestBody MessageDTO dto) throws FirebaseMessagingException {
-        Optional<Chat> chatOpt = chatRepository.findById(dto.getChatId());
+    public ResponseEntity<Message> createMessage(@RequestBody MessageDTO dto) {
+        // 0) Hämta chat och avsändare
+        Optional<Chat> chatOpt   = chatRepository.findById(dto.getChatId());
         Optional<User> senderOpt = userRepository.findById(dto.getSenderId());
         if (chatOpt.isEmpty() || senderOpt.isEmpty()) {
             return ResponseEntity.badRequest().build();
         }
-
-        Chat chat = chatOpt.get();
+        Chat chat   = chatOpt.get();
         User sender = senderOpt.get();
 
-        // Bygg och spara meddelandet i databasen
+        // 1) Bygg och spara meddelandet i databasen
         Message msg = new Message();
         msg.setChat(chat);
         msg.setSender(sender);
@@ -67,7 +67,7 @@ public class MessageController {
         msg.setTimestamp(LocalDateTime.now());
         Message saved = messageService.getMessageRepository().save(msg);
 
-        // 1) WebSocket: skicka till alla på /topic/chat/{id}
+        // 2) WebSocket: skicka till alla på /topic/chat/{id}
         ChatMessage wsMsg = new ChatMessage();
         wsMsg.setChatId(chat.getId());
         wsMsg.setSenderId(sender.getId());
@@ -75,28 +75,30 @@ public class MessageController {
         wsMsg.setContent(saved.getContent());
         messagingTemplate.convertAndSend("/topic/chat/" + chat.getId(), wsMsg);
 
-        // 2) Push-notis via FCM
-        // Hämta match-objektet
+        // 3) Push-notis via FCM (swallow exceptions så vi ändå returnerar 201)
         UserMatch match = chat.getMatch();
-        User partner;
-        // Avgör vem som är partnern
-        if (match.getUser1().getId()==(sender.getId())) {
-            partner = match.getUser2();
-        } else {
-            partner = match.getUser1();
-        }
-        // Läs partnerns sparade token
+        User partner = (match.getUser1().getId()==(sender.getId()))
+                ? match.getUser2()
+                : match.getUser1();
         String deviceToken = partner.getFcmToken();
         if (deviceToken != null && !deviceToken.isEmpty()) {
-            fcmService.sendMessage(
-                    deviceToken,
-                    "Nytt meddelande från " + sender.getName(),
-                    saved.getContent()
-            );
+            try {
+                fcmService.sendMessage(
+                        deviceToken,
+                        "Nytt meddelande från " + sender.getName(),
+                        saved.getContent(),
+                        chat.getId()
+                );
+            } catch (FirebaseMessagingException e) {
+                // Logga felet men låt REST-svaret bli CREATED ändå
+                e.printStackTrace();
+            }
         }
 
+        // 4) Returnera alltid 201 CREATED även om FCM failar
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
+
 
     @MessageMapping("/echo")
     @SendTo("/topic/echo")

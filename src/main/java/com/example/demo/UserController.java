@@ -310,7 +310,7 @@ public class UserController {
 
         user.setAvatarIndex(avatarIndex);
         userRepository.save(user);
-
+        /*
         try {
             if (user.getFcmToken() != null) {
                 fcmService.sendMessage(
@@ -323,7 +323,7 @@ public class UserController {
             e.printStackTrace(); // Optionally handle error better
         }
 
-
+        */
 
 
         return ResponseEntity.ok().build();

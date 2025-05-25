@@ -28,37 +28,44 @@ public class MatchService {
 
     @Transactional
     public UserMatch createMatch(User user1, User user2) {
+        // Läs in användarna med tidigare matcher
         user1 = userRepository.findWithPreviousMatchesById(user1.getId())
                 .orElseThrow(() -> new IllegalArgumentException("User1 not found"));
         user2 = userRepository.findWithPreviousMatchesById(user2.getId())
                 .orElseThrow(() -> new IllegalArgumentException("User2 not found"));
 
-        if (user1.getPreviousMatches().contains(user2) || user2.getPreviousMatches().contains(user1)) {
+        // Om de redan matchats tidigare, gör inget
+        if (user1.getPreviousMatches().contains(user2) ||
+                user2.getPreviousMatches().contains(user1)) {
             return null;
         }
 
+        // 1) Skapa och spara matchen (får nu ett ID)
         UserMatch match = new UserMatch();
         match.setUser1(user1);
         match.setUser2(user2);
+        match = matchRepository.save(match);
 
+        // 2) Skapa och spara chatten som pekar på den sparade matchen
         Chat chat = new Chat();
         chat.setMatch(match);
-        match.setChat(chat);
+        chat = chatRepository.save(chat);
 
+        // 3) Koppla chat-objektet tillbaka till match-objektet i minnet
+        match.setChat(chat);
+        // (Du behöver inte spara match igen för DB:t – chat FK ligger i chat-tabellen.)
+
+        // 4) Uppdatera previousMatches-listorna och spara användarna
         addToPreviousMatches(user1, user2);
         addToPreviousMatches(user2, user1);
-
         userRepository.save(user1);
         userRepository.save(user2);
 
-        // Toggle availability for both users
+        // 5) Toggle availability för båda
         availabilityService.toggleAvailability(user1.getId());
         availabilityService.toggleAvailability(user2.getId());
 
-        return matchRepository.save(match);
-
-
-
+        return match;
     }
 
     private void addToPreviousMatches(User source, User target) {
